@@ -1,0 +1,9 @@
+{
+	"name": "adb-dm-df",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1b56eadc-66a1-450e-9bf4-c92d602748ba",
+		"tenantId": "84c31ca0-ac3b-4eae-ad11-519d80233e6f"
+	}
+}
