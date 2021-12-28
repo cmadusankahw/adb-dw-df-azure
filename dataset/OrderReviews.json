@@ -9,58 +9,35 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "customer_id",
+				"name": "review_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_unique_id",
+				"name": "order_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_zip_code_prefix",
-				"type": "int",
-				"precision": 10
+				"name": "review_score",
+				"type": "tinyint",
+				"precision": 3
 			},
 			{
-				"name": "customer_city",
+				"name": "review_comment_title",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_state",
+				"name": "review_comment_message",
 				"type": "nvarchar"
 			},
 			{
-				"name": "age",
-				"type": "int",
-				"precision": 10
+				"name": "review_creation_date",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "gender",
-				"type": "nvarchar"
-			},
-			{
-				"name": "name",
-				"type": "nvarchar"
-			},
-			{
-				"name": "marital_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "income",
-				"type": "nvarchar"
-			},
-			{
-				"name": "employement_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "job_role",
-				"type": "nvarchar"
-			},
-			{
-				"name": "phone_no",
-				"type": "nvarchar"
+				"name": "review_answer_timestamp",
+				"type": "datetime2",
+				"scale": 7
 			}
 		],
 		"typeProperties": {
