@@ -1,0 +1,84 @@
+{
+	"name": "Products",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "product_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_category_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_name_lenght",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_description_lenght",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_photos_qty",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_weight_g",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_length_cm",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_height_cm",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_width_cm",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_description",
+				"type": "nvarchar"
+			},
+			{
+				"name": "unit_price",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_quantity_on_hand",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_discount",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_brand",
+				"type": "nvarchar"
+			},
+			{
+				"name": "supplier_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "products"
+		}
+	}
+}
