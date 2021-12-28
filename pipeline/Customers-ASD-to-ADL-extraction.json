@@ -1,5 +1,5 @@
 {
-	"name": "ASD-to-ADL-extraction",
+	"name": "Customers-ASD-to-ADL-extraction",
 	"properties": {
 		"activities": [
 			{
@@ -55,6 +55,9 @@
 				]
 			}
 		],
+		"folder": {
+			"name": "ADS-toADL-extraction"
+		},
 		"annotations": []
 	}
 }
