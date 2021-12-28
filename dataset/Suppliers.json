@@ -9,58 +9,34 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "customer_id",
+				"name": "supplier_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_unique_id",
+				"name": "supplier_comapny",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_zip_code_prefix",
+				"name": "supplier_city",
+				"type": "nvarchar"
+			},
+			{
+				"name": "supplier_state",
+				"type": "nvarchar"
+			},
+			{
+				"name": "supplier_zip_code_prefix",
 				"type": "int",
 				"precision": 10
 			},
 			{
-				"name": "customer_city",
+				"name": "supplied_quantity_for_month",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_state",
-				"type": "nvarchar"
-			},
-			{
-				"name": "age",
-				"type": "int",
-				"precision": 10
-			},
-			{
-				"name": "gender",
-				"type": "nvarchar"
-			},
-			{
-				"name": "name",
-				"type": "nvarchar"
-			},
-			{
-				"name": "marital_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "income",
-				"type": "nvarchar"
-			},
-			{
-				"name": "employement_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "job_role",
-				"type": "nvarchar"
-			},
-			{
-				"name": "phone_no",
-				"type": "nvarchar"
+				"name": "supplier_reg_date",
+				"type": "datetime2",
+				"scale": 7
 			}
 		],
 		"typeProperties": {
