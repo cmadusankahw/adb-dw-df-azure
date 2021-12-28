@@ -1,0 +1,9 @@
+{
+	"name": "All-ADL-DW-Loading",
+	"properties": {
+		"folder": {
+			"name": "ADL-to-DW-Loading"
+		},
+		"annotations": []
+	}
+}
