@@ -9,57 +9,44 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
+				"name": "order_id",
+				"type": "nvarchar"
+			},
+			{
 				"name": "customer_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_unique_id",
+				"name": "order_status",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_zip_code_prefix",
-				"type": "int",
-				"precision": 10
+				"name": "order_purchase_timestamp",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "customer_city",
-				"type": "nvarchar"
+				"name": "order_approved_at",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "customer_state",
-				"type": "nvarchar"
+				"name": "order_delivered_carrier_date",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "age",
-				"type": "int",
-				"precision": 10
+				"name": "order_delivered_customer_date",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "gender",
-				"type": "nvarchar"
+				"name": "order_estimated_delivery_date",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "name",
-				"type": "nvarchar"
-			},
-			{
-				"name": "marital_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "income",
-				"type": "nvarchar"
-			},
-			{
-				"name": "employement_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "job_role",
-				"type": "nvarchar"
-			},
-			{
-				"name": "phone_no",
+				"name": "delivery_service_id",
 				"type": "nvarchar"
 			}
 		],
