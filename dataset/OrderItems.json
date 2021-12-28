@@ -9,58 +9,35 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "customer_id",
+				"name": "order_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_unique_id",
+				"name": "order_item_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_zip_code_prefix",
-				"type": "int",
-				"precision": 10
-			},
-			{
-				"name": "customer_city",
+				"name": "product_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "customer_state",
+				"name": "seller_id",
 				"type": "nvarchar"
 			},
 			{
-				"name": "age",
-				"type": "int",
-				"precision": 10
+				"name": "shipping_limit_date",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
-				"name": "gender",
-				"type": "nvarchar"
+				"name": "price",
+				"type": "float",
+				"precision": 15
 			},
 			{
-				"name": "name",
-				"type": "nvarchar"
-			},
-			{
-				"name": "marital_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "income",
-				"type": "nvarchar"
-			},
-			{
-				"name": "employement_status",
-				"type": "nvarchar"
-			},
-			{
-				"name": "job_role",
-				"type": "nvarchar"
-			},
-			{
-				"name": "phone_no",
-				"type": "nvarchar"
+				"name": "freight_value",
+				"type": "float",
+				"precision": 15
 			}
 		],
 		"typeProperties": {
