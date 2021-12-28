@@ -1,0 +1,25 @@
+{
+	"name": "ProductCategories",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "product_category_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_category_translated",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "product_categories"
+		}
+	}
+}
