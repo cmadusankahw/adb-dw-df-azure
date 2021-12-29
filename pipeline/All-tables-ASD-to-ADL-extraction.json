@@ -97,12 +97,12 @@
 							},
 							{
 								"source": {
-									"name": "age",
-									"type": "Int32",
-									"physicalType": "int"
+									"name": "birth_date",
+									"type": "DateTime",
+									"physicalType": "datetime2"
 								},
 								"sink": {
-									"name": "age",
+									"name": "birth_date",
 									"type": "String",
 									"physicalType": "String"
 								}
