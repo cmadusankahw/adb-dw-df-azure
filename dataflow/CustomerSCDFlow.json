@@ -6,19 +6,27 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Customers",
+						"referenceName": "customers_staged",
 						"type": "DatasetReference"
 					},
 					"name": "CustomerSource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "addingSCDIsCurrent"
 				}
 			],
-			"script": "source(output(\n\t\tcustomer_id as string,\n\t\tcustomer_unique_id as string,\n\t\tcustomer_zip_code_prefix as integer,\n\t\tcustomer_city as string,\n\t\tcustomer_state as string,\n\t\tage as integer,\n\t\tgender as string,\n\t\tname as string,\n\t\tmarital_status as string,\n\t\tincome as string,\n\t\temployement_status as string,\n\t\tjob_role as string,\n\t\tphone_no as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustomerSource\nCustomerSource derive(scd_is_current = \"YES\",\n\t\tscd_created_at = currentTimestamp()) ~> addingSCDIsCurrent"
+			"script": "source(output(\n\t\tcustomer_id as string,\n\t\tcustomer_unique_id as string,\n\t\tcustomer_zip_code_prefix as string,\n\t\tcustomer_city as string,\n\t\tcustomer_state as string,\n\t\tbirth_date as string,\n\t\tgender as string,\n\t\tname as string,\n\t\tmarital_status as string,\n\t\tincome as string,\n\t\temployement_status as string,\n\t\tjob_role as string,\n\t\tphone_no as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> CustomerSource\nCustomerSource derive(scd_is_current = \"YES\",\n\t\tscd_created_at = currentTimestamp()) ~> addingSCDIsCurrent\naddingSCDIsCurrent sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_customer as integer,\n\t\tcustomer_id as string,\n\t\tcustomer_unique_id as string,\n\t\tcustomer_zip_code_prefix as integer,\n\t\tcustomer_city as string,\n\t\tcustomer_state as string,\n\t\tbirth_date as string,\n\t\tbirth_year as integer,\n\t\tbirth_month as integer,\n\t\tgeneration as string,\n\t\tage as integer,\n\t\tage_category as string,\n\t\tgender as string,\n\t\tname as string,\n\t\tmarital_status as string,\n\t\tincome as string,\n\t\tsocial_state as string,\n\t\temployement_status as string,\n\t\tjob_role as string,\n\t\tphone_operator as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string,\n\t\tscd_soft_deleted as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tcustomer_id,\n\t\tcustomer_unique_id,\n\t\tcustomer_zip_code_prefix,\n\t\tcustomer_city,\n\t\tcustomer_state,\n\t\tbirth_date,\n\t\tgender,\n\t\tname,\n\t\tmarital_status,\n\t\tincome,\n\t\temployement_status,\n\t\tjob_role,\n\t\tscd_created_at,\n\t\tscd_is_current\n\t)) ~> sink1"
 		}
 	}
 }
