@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e047db55-f410-41e1-aa93-498fceda80f2"
+				"spark.autotune.trackingId": "1b763e87-96d9-4f08-a90d-bd972e3fd086"
 			}
 		},
 		"metadata": {
@@ -95,13 +95,15 @@
 					}
 				},
 				"source": [
-					"account_name = \"chiransubfs\"\r\n",
-					"container_name = \"data\"\r\n",
+					"account_name = \"chiransubdl\"\r\n",
+					"container_name = \"chiransubfs\"\r\n",
 					"\r\n",
-					"customers_relative_path = \"curated/olist_customers_dataset.csv\"\r\n",
+					"# abfss://chiransubfs@chiransubdl.dfs.core.windows.net/data/curated/olist_customers_dataset.csv\r\n",
+					"\r\n",
+					"customers_relative_path = \"data/curated/olist_customers_dataset.csv\"\r\n",
 					"customer_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,customers_relative_path)"
 				],
-				"execution_count": 4
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -123,7 +125,7 @@
 					"                .csv(customer_path) # , schema=transaction_schema)\r\n",
 					"customer_df.createOrReplaceTempView(\"customer\")"
 				],
-				"execution_count": 6
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
