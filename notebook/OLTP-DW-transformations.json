@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "1b763e87-96d9-4f08-a90d-bd972e3fd086"
+				"spark.autotune.trackingId": "2f068138-7103-4b08-9cde-c206da09ff27"
 			}
 		},
 		"metadata": {
@@ -100,8 +100,7 @@
 					"\r\n",
 					"# abfss://chiransubfs@chiransubdl.dfs.core.windows.net/data/curated/olist_customers_dataset.csv\r\n",
 					"\r\n",
-					"customers_relative_path = \"data/curated/olist_customers_dataset.csv\"\r\n",
-					"customer_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,customers_relative_path)"
+					"customer_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/olist_customers_dataset.csv\")"
 				],
 				"execution_count": 11
 			},
@@ -138,12 +137,82 @@
 						"transient": {
 							"deleting": false
 						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# display(customer_df)"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
 					}
 				},
 				"source": [
-					"display(customer_df)"
+					"Processed Data Dumping"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\")\r\n",
+					"\r\n",
+					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_customers.csv\")"
 				],
-				"execution_count": null
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_df.write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".option(\"sep\",\"|\")\\\r\n",
+					".save(customer_processed_path)"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
 			}
 		]
 	}
