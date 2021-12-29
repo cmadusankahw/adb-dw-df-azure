@@ -1634,7 +1634,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "Years",
-					"value": ""
+					"value": "2018,2019,2020"
 				}
 			}
 		],
