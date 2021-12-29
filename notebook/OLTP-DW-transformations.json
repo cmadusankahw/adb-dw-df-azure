@@ -3,6 +3,10 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "adbsparkpool",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -13,22 +17,35 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "50923253-26fe-47d0-a745-74c3b6342e57"
+				"spark.autotune.trackingId": "e047db55-f410-41e1-aa93-498fceda80f2"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1"
-			},
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
-			}
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03e69755-ef75-48a3-b96f-506247a595b8/resourceGroups/azure-ceritifications-training/providers/Microsoft.Synapse/workspaces/adb-dw-dm-synapse/bigDataPools/adbsparkpool",
+				"name": "adbsparkpool",
+				"type": "Spark",
+				"endpoint": "https://adb-dw-dm-synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/adbsparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -36,7 +53,94 @@
 				"source": [
 					"# transformations goes here"
 				],
-				"attachments": null,
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"from pyspark.sql.functions import *\r\n",
+					"from pyspark.sql.functions import udf\r\n",
+					"from pyspark.sql.utils import AnalysisException\r\n",
+					"from pyspark.sql import Row\r\n",
+					"from datetime import datetime, timezone\r\n",
+					"import ast\r\n",
+					"import re"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"account_name = \"chiransubfs\"\r\n",
+					"container_name = \"data\"\r\n",
+					"\r\n",
+					"customers_relative_path = \"curated/olist_customers_dataset.csv\"\r\n",
+					"customer_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,customers_relative_path)"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(customer_path) # , schema=transaction_schema)\r\n",
+					"customer_df.createOrReplaceTempView(\"customer\")"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"display(customer_df)"
+				],
 				"execution_count": null
 			}
 		]
