@@ -30,9 +30,9 @@
 				"type": "nvarchar"
 			},
 			{
-				"name": "age",
-				"type": "int",
-				"precision": 10
+				"name": "birth_date",
+				"type": "datetime2",
+				"scale": 7
 			},
 			{
 				"name": "gender",
