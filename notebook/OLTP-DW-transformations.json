@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0a003a97-0da8-4da9-b6fd-580c65f09f65"
+				"spark.autotune.trackingId": "c1777d96-cb72-4fc5-9747-fffbde5badc5"
 			}
 		},
 		"metadata": {
@@ -48,13 +48,6 @@
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
-			{
-				"cell_type": "code",
-				"source": [
-					"# transformations goes here"
-				],
-				"execution_count": null
-			},
 			{
 				"cell_type": "code",
 				"metadata": {
@@ -98,7 +91,17 @@
 					"account_name = \"chiransubdl\"\r\n",
 					"container_name = \"chiransubfs\"\r\n",
 					"\r\n",
-					"customer_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/customers.csv\")"
+					"customer_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/customers.csv\")\r\n",
+					"geolocation_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/geolocation.csv\")\r\n",
+					"delivery_services_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/delivery_services.csv\")\r\n",
+					"order_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/orders.csv\")\r\n",
+					"order_items_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_items.csv\")\r\n",
+					"order_reviews_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_reviews.csv\")\r\n",
+					"order_payments_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
+					"products_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/products.csv\")\r\n",
+					"product_categories_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/product_categories.csv\")\r\n",
+					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
+					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
 				"execution_count": 11
 			},
@@ -119,10 +122,83 @@
 					"customer_df = spark.read\\\r\n",
 					"                .option(\"header\", True)\\\r\n",
 					"                .option(\"inferSchema\", True)\\\r\n",
-					"                .csv(customer_path) # , schema=transaction_schema)\r\n",
-					"customer_df.createOrReplaceTempView(\"customer\")"
+					"                .csv(customer_raw_path)\r\n",
+					"customer_df.createOrReplaceTempView(\"customer\")\r\n",
+					"\r\n",
+					"order_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_raw_path)\r\n",
+					"order_df.createOrReplaceTempView(\"order\")\r\n",
+					"\r\n",
+					"order_items_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_items_raw_path)\r\n",
+					"order_items_df.createOrReplaceTempView(\"orderitems\")\r\n",
+					"\r\n",
+					"order_payments_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_payments_raw_path)\r\n",
+					"order_payments_df.createOrReplaceTempView(\"orderpayments\")\r\n",
+					"\r\n",
+					"order_reviews_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_reviews_raw_path)\r\n",
+					"order_reviews_df.createOrReplaceTempView(\"orderreviews\")\r\n",
+					"\r\n",
+					"products_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(products_raw_path)\r\n",
+					"products_df.createOrReplaceTempView(\"product\")\r\n",
+					"\r\n",
+					"product_categorie_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(product_categories_raw_path)\r\n",
+					"product_categorie_df.createOrReplaceTempView(\"productcategories\")\r\n",
+					"\r\n",
+					"geolocation_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(geolocation_raw_path)\r\n",
+					"geolocation_df.createOrReplaceTempView(\"geolocation\")\r\n",
+					"\r\n",
+					"delivery_services_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(delivery_services_raw_path)\r\n",
+					"delivery_services_df.createOrReplaceTempView(\"deliveryservices\")\r\n",
+					"\r\n",
+					"seller_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(sellers_raw_path)\r\n",
+					"seller_df.createOrReplaceTempView(\"seller\")\r\n",
+					"\r\n",
+					"supplier_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(suppliers_raw_path)\r\n",
+					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
 				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Pre Processing"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -135,13 +211,12 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"collapsed": false
+					}
 				},
 				"source": [
-					"# display(customer_df)"
+					""
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
