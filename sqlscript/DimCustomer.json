@@ -1,0 +1,17 @@
+{
+	"name": "DimCustomer",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [dbo].[AGGFACTOrder]    Script Date: 12/28/2021 ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[AGGFACTOrder](\n\t[order_id] [nvarchar](50) NOT NULL,\n\t[sk_order_details] [int] NULL,\n\t[sk_customer] [int] NULL,\n\t[sk_review] [int] NULL,\n\t[sk_delivery_service] [int] NULL,\n\t[sk_date] [int] NULL,\n\t[sk_geolocation] [int] NULL,\n\t[order_items] [varchar](200) NULL,\n\t[order_total_price] [float] NULL,\n\t[order_total_freight_value] [float] NULL,\n\t[order_total_discount]  [float] NULL,\n\t[payment_sequential] [int] NULL,\n\t[payment_installments] [float] NULL,\n\t[payment_value] [float] NULL,\n\t[delivery_service_duration] [int] NULL,\n\t[order_purchase_timestamp] [datetime2](7) NULL,\n\t[order_approved_at] [datetime2](7) NULL,\n\t[order_delivered_carrier_date] [datetime2](7) NULL,\n\t[order_delivered_customer_date] [datetime2](7) NULL,\n\t[order_estimated_delivery_date] [datetime2](7) NULL,\n CONSTRAINT [PK_AGGFACTOrder] PRIMARY KEY CLUSTERED \n(\n\t[order_id] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO\n\nALTER TABLE [dbo].[AGGFACTOrder]  WITH CHECK ADD  CONSTRAINT [FK_agg_order_details_sk] FOREIGN KEY([sk_order_details])\nREFERENCES [dbo].[DimOrderDetails] ([sk_order_details])\nON UPDATE CASCADE\nON DELETE CASCADE\nGO\n\n--ALTER TABLE [dbo].[AGGFACTOrder] CHECK CONSTRAINT [FK_agg_order_details_sk]\n--GO\n\nALTER TABLE [dbo].[AGGFACTOrder]  WITH CHECK ADD  CONSTRAINT [FK_agg_customer_sk] FOREIGN KEY([sk_customer])\nREFERENCES [dbo].[DimCustomer] ([sk_customer])\nON UPDATE CASCADE\nON DELETE CASCADE\nGO\n\n--ALTER TABLE [dbo].[AGGFACTOrder] CHECK CONSTRAINT [FK_agg_customer_sk]\n--GO\n\n\nALTER TABLE [dbo].[AGGFACTOrder]  WITH CHECK ADD  CONSTRAINT [FK_agg_review_sk] FOREIGN KEY([sk_review])\nREFERENCES [dbo].[DimOrderReview] ([sk_review])\nON UPDATE CASCADE\nON DELETE CASCADE\nGO\n\n--ALTER TABLE [dbo].[AGGFACTOrder] CHECK CONSTRAINT [FK_agg_review_sk]\n--GO\n\nALTER TABLE [dbo].[AGGFACTOrder]  WITH CHECK ADD  CONSTRAINT [FK_agg_delivery_service_sk] FOREIGN KEY([sk_delivery_service])\nREFERENCES [dbo].[DimDeliveryService] ([sk_delivery_service])\nON UPDATE CASCADE\nON DELETE CASCADE\nGO\n\n--ALTER TABLE [dbo].[AGGFACTOrder] CHECK CONSTRAINT [FK_agg_delivery_service_sk]\n--GO\n\nALTER TABLE [dbo].[AGGFACTOrder]  WITH CHECK ADD  CONSTRAINT [FK_agg_date_sk] FOREIGN KEY([sk_date])\nREFERENCES [dbo].[DimDate] ([sk_date])\nON UPDATE CASCADE\nON DELETE CASCADE\nGO\n\n--ALTER TABLE [dbo].[AGGFACTOrder] CHECK CONSTRAINT [FK_agg_date_sk]\n--GO\n\n\nALTER TABLE [dbo].[AGGFACTOrder]  WITH CHECK ADD  CONSTRAINT [FK_agg_geolocation_sk] FOREIGN KEY([sk_geolocation])\nREFERENCES [dbo].[DimGeoLocation] ([sk_geolocation])\nON UPDATE CASCADE\nON DELETE CASCADE\nGO\n\n--ALTER TABLE [dbo].[AGGFACTOrder] CHECK CONSTRAINT [FK_agg_geolocation_sk]\n--GO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
