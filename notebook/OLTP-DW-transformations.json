@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2f068138-7103-4b08-9cde-c206da09ff27"
+				"spark.autotune.trackingId": "0a003a97-0da8-4da9-b6fd-580c65f09f65"
 			}
 		},
 		"metadata": {
@@ -98,9 +98,7 @@
 					"account_name = \"chiransubdl\"\r\n",
 					"container_name = \"chiransubfs\"\r\n",
 					"\r\n",
-					"# abfss://chiransubfs@chiransubdl.dfs.core.windows.net/data/curated/olist_customers_dataset.csv\r\n",
-					"\r\n",
-					"customer_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/olist_customers_dataset.csv\")"
+					"customer_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/customers.csv\")"
 				],
 				"execution_count": 11
 			},
