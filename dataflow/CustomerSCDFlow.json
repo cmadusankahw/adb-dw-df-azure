@@ -1,0 +1,24 @@
+{
+	"name": "CustomerSCDFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Customers",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSource"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "addingSCDIsCurrent"
+				}
+			],
+			"script": "source(output(\n\t\tcustomer_id as string,\n\t\tcustomer_unique_id as string,\n\t\tcustomer_zip_code_prefix as integer,\n\t\tcustomer_city as string,\n\t\tcustomer_state as string,\n\t\tage as integer,\n\t\tgender as string,\n\t\tname as string,\n\t\tmarital_status as string,\n\t\tincome as string,\n\t\temployement_status as string,\n\t\tjob_role as string,\n\t\tphone_no as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustomerSource\nCustomerSource derive(scd_is_current = \"YES\",\n\t\tscd_created_at = currentTimestamp()) ~> addingSCDIsCurrent"
+		}
+	}
+}
