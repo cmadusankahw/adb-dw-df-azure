@@ -1,0 +1,43 @@
+{
+	"name": "GeoLocation",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "delivery_service_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "delivery_service_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "delivery_service_city",
+				"type": "nvarchar"
+			},
+			{
+				"name": "delivery_service_state",
+				"type": "nvarchar"
+			},
+			{
+				"name": "delivery_service_zip_code_prefix",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "delivery_service_reg_date",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "geolocation"
+		}
+	}
+}
