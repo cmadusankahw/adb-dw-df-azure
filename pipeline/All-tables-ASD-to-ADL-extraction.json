@@ -215,7 +215,14 @@
 			{
 				"name": "Orders ASD to ADL",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set Years",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -788,7 +795,14 @@
 			{
 				"name": "delivery Services ASD to ADL",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set Years",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -914,7 +928,14 @@
 			{
 				"name": "Suppliers ASD to ADL",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set Years",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1487,7 +1508,14 @@
 			{
 				"name": "Geolocation ASD to ADL",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set Years",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1597,8 +1625,25 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Set Years",
+				"description": "Comma separated years to ingest",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Years",
+					"value": ""
+				}
 			}
 		],
+		"variables": {
+			"Years": {
+				"type": "String",
+				"defaultValue": "2018,2019,2020"
+			}
+		},
 		"folder": {
 			"name": "ADS-toADL-extraction"
 		},
