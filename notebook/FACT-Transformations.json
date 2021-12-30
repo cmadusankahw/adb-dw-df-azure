@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "68b464c2-a30f-4985-99af-756cdbaf9729"
+				"spark.autotune.trackingId": "84a45ea0-913a-40bd-a9ff-523346a1d14d"
 			}
 		},
 		"metadata": {
@@ -32,7 +32,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"# DATE Dimension "
+					"# DATE Dimension  "
 				],
 				"execution_count": null
 			}
