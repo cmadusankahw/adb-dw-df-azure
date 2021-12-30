@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8680a9a6-ba1d-405e-b354-ed4b8d221d02"
+				"spark.autotune.trackingId": "50e67092-6adb-4085-8714-f52b2d034576"
 			}
 		},
 		"metadata": {
@@ -749,6 +749,77 @@
 					}
 				},
 				"source": [
+					"def getweekday(col):\r\n",
+					"    try:\r\n",
+					"        year = int(col[0:4])\r\n",
+					"        month = int(col[5:7])\r\n",
+					"        day = int(col[8:10])\r\n",
+					"        d1 = datetime.datetime(year,month,day,0,0,0,0)\r\n",
+					"        return d1.isoweekday()\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"def getweekyear(col):\r\n",
+					"    try:\r\n",
+					"        year = int(col[0:4])\r\n",
+					"        month = int(col[5:7])\r\n",
+					"        day = int(col[8:10])\r\n",
+					"        d1 = datetime.datetime(year,month,day,0,0,0,0)\r\n",
+					"        return d1.isocalendar()[1]\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"def getleapyear(col):\r\n",
+					"    try:\r\n",
+					"        year = int(col[0:4])\r\n",
+					"        month = int(col[5:7])\r\n",
+					"        day = int(col[8:10])\r\n",
+					"        d1 = datetime.datetime(year,month,day,0,0,0,0)\r\n",
+					"        if calendar.isleap(d1.year):\r\n",
+					"            return 'YES'\r\n",
+					"        else:\r\n",
+					"            return 'NO'\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"def getdayprefix(col):\r\n",
+					"    try:\r\n",
+					"        if col == 1 or col == \"1\":\r\n",
+					"            return \"MONDAY\"\r\n",
+					"        elif col == 2 or col == \"2\":\r\n",
+					"            return \"TUESDAY\"\r\n",
+					"        elif col == 3 or col == \"3\":\r\n",
+					"            return \"WEDNSDAY\"\r\n",
+					"        elif col == 4 or col == \"4\":\r\n",
+					"            return \"THURSDAY\"\r\n",
+					"        elif col == 5 or col == \"5\":\r\n",
+					"            return \"FRIDAY\"\r\n",
+					"        elif col == 6 or col == \"6\":\r\n",
+					"            return \"SATURDAY\"\r\n",
+					"        elif col == 7 or col == \"7\":\r\n",
+					"            return \"SUNDAY\"\r\n",
+					"    except:\r\n",
+					"        pass"
+				],
+				"execution_count": 91
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"sdate = datetime.date(2016,1,1)   # start date\r\n",
 					"edate = datetime.date(2019,12,31)   # end date\r\n",
 					"date_list = pandas.date_range(sdate,edate-datetime.timedelta(days=1),freq='d')\r\n",
@@ -756,16 +827,26 @@
 					"for i in range(0,len(date_list)):\r\n",
 					"    dim_finalized_list.append((i+1,str(date_list[i])))\r\n",
 					"\r\n",
+					"getDate =  udf(lambda z: getsubstring(z,0,10))\r\n",
 					"getYear = udf(lambda z: getsubstring(z,0,4))\r\n",
 					"getMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
 					"getDayofMonth = udf(lambda z: getsubstring(z,810))\r\n",
 					"getQuarter = udf(lambda z: getquarter(z,5,7))\r\n",
+					"getWeekDay = udf(lambda z: getweekday(z))\r\n",
+					"getWeekYear = udf(lambda z: getweekyear(z))\r\n",
+					"getLeapYear = udf(lambda z: getleapyear(z))\r\n",
+					"getDayPrefix = udf(lambda z: getdayprefix(z))\r\n",
 					"\r\n",
 					"dim_date_df = spark.createDataFrame(data=dim_finalized_list, schema = [\"sk_date\",\"date\"])\\\r\n",
+					".withColumn(\"date\",getDate(\"date\"))\\\r\n",
 					".withColumn(\"year\",getYear(\"date\"))\\\r\n",
 					".withColumn(\"month\",getMonth(\"date\"))\\\r\n",
 					".withColumn(\"quarter\",getQuarter(\"date\"))\\\r\n",
-					".withColumn(\"day_of_month\",getDayofMonth(\"date\"))\\"
+					".withColumn(\"day_of_month\",getDayofMonth(\"date\"))\\\r\n",
+					".withColumn(\"day_of_week\",getWeekDay(\"date\"))\\\r\n",
+					".withColumn(\"week_of_year\",getWeekYear(\"date\"))\\\r\n",
+					".withColumn(\"is_leap_year\",getLeapYear(\"date\"))\\\r\n",
+					".withColumn(\"day_prefix\",getDayPrefix(\"date\"))\\"
 				],
 				"execution_count": 87
 			},
