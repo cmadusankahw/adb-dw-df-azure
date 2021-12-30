@@ -903,6 +903,18 @@
 									"type": "String",
 									"physicalType": "String"
 								}
+							},
+							{
+								"source": {
+									"name": "delivery_service_duration",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "delivery_service_duration",
+									"type": "String",
+									"physicalType": "String"
+								}
 							}
 						],
 						"typeConversion": true,
