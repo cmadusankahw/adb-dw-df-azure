@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "26fcad3c-00ff-4b71-847c-4321835608ce"
+				"spark.autotune.trackingId": "b501943d-cc57-48b5-b16f-d230ef3dc468"
 			}
 		},
 		"metadata": {
@@ -496,7 +496,9 @@
 					}
 				},
 				"source": [
-					"geolocation_df = sk_generator('geolocation_zip_code_prefix','sk_geolocation','geolocation')"
+					"geolocation_df = sk_generator('geolocation_zip_code_prefix','sk_geolocation','geolocation')\\\r\n",
+					".withColumnRenamed('geolocation_lat','geolocation_lattitude')\\\r\n",
+					".withColumnRenamed('geolocation_lng','geolocation_longtitude')"
 				],
 				"execution_count": 38
 			},
