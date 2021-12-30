@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5b0e04ff-5fd0-4e4f-992b-7a21a60e6d59"
+				"spark.autotune.trackingId": "b551a8bf-6a0e-4f3a-9b03-24e6300075fb"
 			}
 		},
 		"metadata": {
@@ -642,46 +642,22 @@
 					}
 				},
 				"source": [
-					"products_df.printSchema()"
+					"getProductVolume = udf(lambda z: get_product_volume(z))\r\n",
+					"getPackageType = udf(lambda z: get_package_type(z))\r\n",
+					"\r\n",
+					"products_df = sk_generator('product_id','sk_product','product')\\\r\n",
+					".withColumn('product_volume', getProductVolume(array('product_length_cm','product_height_cm','product_width_cm')))\\\r\n",
+					".withColumn('package_type', getPackageType(array('product_volume','product_weight_g')))\\\r\n",
+					".withColumnRenamed('product_photos_qty','product_photos_quantity')\r\n",
+					"\r\n",
+					"# unit_price\r\n",
+					"# product_quantity_on_hand\r\n",
+					"# product_discount\r\n",
+					"\r\n",
+					"# to drop\r\n",
+					"# supplier_id"
 				],
 				"execution_count": 43
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(products_df)"
-				],
-				"execution_count": 44
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
