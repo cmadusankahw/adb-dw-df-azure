@@ -1,5 +1,5 @@
 {
-	"name": "OLTP-DW-transformations",
+	"name": "Dim-transformations",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,

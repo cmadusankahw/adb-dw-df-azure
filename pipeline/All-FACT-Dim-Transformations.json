@@ -1,6 +1,55 @@
 {
 	"name": "All-FACT-Dim-Transformations",
 	"properties": {
+		"activities": [
+			{
+				"name": "Dim Transformations",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "Dim-transformations",
+						"type": "NotebookReference"
+					},
+					"snapshot": true
+				}
+			},
+			{
+				"name": "FACT Transformations",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Dim Transformations",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "FACT-Transformations",
+						"type": "NotebookReference"
+					},
+					"snapshot": true
+				}
+			}
+		],
 		"folder": {
 			"name": "Transformations"
 		},
