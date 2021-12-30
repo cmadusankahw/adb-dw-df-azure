@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e57d47a7-7034-4c41-9cb2-caf4fe5103e4"
+				"spark.autotune.trackingId": "3f6455d0-8e91-42c4-93ac-3b770f905ade"
 			}
 		},
 		"metadata": {
@@ -264,6 +264,20 @@
 					"        else:\r\n",
 					"            return bucket_names[-1]\r\n",
 					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to set seller size\r\n",
+					"\"\"\"\r\n",
+					"def check_seller_size(col,limits):\r\n",
+					"    try:\r\n",
+					"        if int(col)> limits[0]:\r\n",
+					"            return \"Small-Scale\"\r\n",
+					"        if int(col)> limits[1]:\r\n",
+					"            return \"Medium-Scale\"\r\n",
+					"        if int(col)> limits[2]:\r\n",
+					"            return \"Mass-Scale\"\r\n",
+					"    except:\r\n",
 					"        pass"
 				],
 				"execution_count": 27
@@ -303,7 +317,10 @@
 					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())\r\n",
 					"getPhoneOperator = udf(lambda z: getsubstring(z,0,3))\r\n",
 					"\r\n",
-					"customer_df = customer_df.withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
+					"customer_sk_df = sk_generator('customer_id',customer_df)\r\n",
+					"\r\n",
+					"customer_df = customer_df.join(customer_sk_df, how = \"left\", on=\"customer_id\")\\\r\n",
+					".withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
 					".withColumn( 'birth_month', getBirthMonth('birth_date'))\\\r\n",
 					".withColumn( 'age', getAge('birth_date'))\\\r\n",
 					".withColumn( 'generation', generationBucketizer('age'))\\\r\n",
@@ -341,46 +358,12 @@
 					}
 				},
 				"source": [
-					"delivery_services_df.printSchema()"
+					"delivery_services_sk_df = sk_generator('delivery_service_id',delivery_services_df)\r\n",
+					"delivery_services_df = delivery_services_df.join(delivery_services_sk_df, how = \"left\", on=\"delivery_service_id\")\r\n",
+					"\r\n",
+					"# delivery_service_duration"
 				],
 				"execution_count": 33
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(delivery_services_df)"
-				],
-				"execution_count": 34
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -409,46 +392,12 @@
 					}
 				},
 				"source": [
-					"supplier_df.printSchema()"
+					"supplier_sk_df = sk_generator('supplier_id',supplier_df)\r\n",
+					"supplier_df = supplier_df.join(supplier_sk_df, how = \"left\", on=\"supplier_id\")\r\n",
+					"\r\n",
+					"# supplied_quantity_for_month"
 				],
 				"execution_count": 35
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(supplier_df)"
-				],
-				"execution_count": 36
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -477,27 +426,23 @@
 					}
 				},
 				"source": [
-					"seller_df.printSchema()"
+					"getSellerSize  = check_seller_sizer(z,[5,20,100])\r\n",
+					"\r\n",
+					"seller_product_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
+					".groupBy(\"seller_id\").agg(count('product_id').alias('no_of_products_sold'))\r\n",
+					"\r\n",
+					"seller_product_cat_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
+					".join(products_df.select(col(\"product_id\"),col(\"product_category_name\").distinct(), how=\"left\", on=\"product_id\"))\\\r\n",
+					".groupBy(\"seller_id\").agg(collect_list(\"product_category_name\"))\\\r\n",
+					".withColumnRenamed('collect_list(product_category_name)','product_categories_sold')\\\r\n",
+					".withColumn('product_categories_sold', co('product_categories_sold').cast(StringType()))\r\n",
+					"\r\n",
+					"seller_sk_df = sk_generator(z,'seller_id',seller_df)\r\n",
+					"seller_df = seller_df.join(seller_sk_df, how = \"left\", on=\"seller_id\")\\\r\n",
+					".join(seller_product_df, how = \"left\", on=\"seller_id\")\\\r\n",
+					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")"
 				],
 				"execution_count": 37
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
