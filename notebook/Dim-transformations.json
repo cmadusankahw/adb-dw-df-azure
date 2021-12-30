@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "90876f4e-21d7-4e0e-8a20-6c1baa3318a9"
+				"spark.autotune.trackingId": "90d91c4a-807b-44cc-a054-d0df25f737fc"
 			}
 		},
 		"metadata": {
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 3
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 4
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -453,13 +453,13 @@
 					"def getholiday(col):\r\n",
 					"    try:\r\n",
 					"        for d in holidays.UnitedStates(years=[2016,2017,1018,2019]).items():\r\n",
-					"            if str(date[0]) == col:\r\n",
+					"            if str(d[0]) == col:\r\n",
 					"                return \"YES\"\r\n",
 					"        return \"NO\"\r\n",
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 90
+				"execution_count": 25
 			},
 			{
 				"cell_type": "markdown",
@@ -506,7 +506,7 @@
 					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
 					".drop('phone_no')"
 				],
-				"execution_count": 13
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
@@ -539,7 +539,7 @@
 					"\r\n",
 					"# delivery_service_duration"
 				],
-				"execution_count": 16
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -572,7 +572,7 @@
 					"\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": 39
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -618,7 +618,7 @@
 					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")\\\r\n",
 					".withColumn('seller_size', getSellerSize(col('no_of_products_sold')))"
 				],
-				"execution_count": 34
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -651,7 +651,7 @@
 					".withColumnRenamed('geolocation_lat','geolocation_lattitude')\\\r\n",
 					".withColumnRenamed('geolocation_lng','geolocation_longtitude')"
 				],
-				"execution_count": 38
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -719,7 +719,7 @@
 					"\r\n",
 					"# Format dates to remove .00000 part in FACT"
 				],
-				"execution_count": 69
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
@@ -753,7 +753,7 @@
 					"order_reviews_df = sk_generator('review_id','sk_review','orderreviews')\\\r\n",
 					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))"
 				],
-				"execution_count": 46
+				"execution_count": 11
 			},
 			{
 				"cell_type": "markdown",
@@ -797,7 +797,7 @@
 					"# to drop\r\n",
 					"# supplier_id"
 				],
-				"execution_count": 53
+				"execution_count": 12
 			},
 			{
 				"cell_type": "markdown",
@@ -836,7 +836,7 @@
 					"getDate =  udf(lambda z: getsubstring(z,0,10))\r\n",
 					"getYear = udf(lambda z: getsubstring(z,0,4))\r\n",
 					"getMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
-					"getDayofMonth = udf(lambda z: getsubstring(z,810))\r\n",
+					"getDayofMonth = udf(lambda z: getsubstring(z,8,10))\r\n",
 					"getQuarter = udf(lambda z: getquarter(z,5,7))\r\n",
 					"getWeekDay = udf(lambda z: getweekday(z))\r\n",
 					"getWeekYear = udf(lambda z: getweekyear(z))\r\n",
@@ -854,11 +854,30 @@
 					".withColumn(\"day_of_week\",getWeekDay(\"date\"))\\\r\n",
 					".withColumn(\"week_of_year\",getWeekYear(\"date\"))\\\r\n",
 					".withColumn(\"is_leap_year\",getLeapYear(\"date\"))\\\r\n",
-					".withColumn(\"is_weekend\",getWeekend(\"date\"))\\\r\n",
-					".withColumn(\"day_prefix\",getDayPrefix(\"date\"))\\\r\n",
+					".withColumn(\"is_weekend\",getWeekend(\"day_of_week\"))\\\r\n",
+					".withColumn(\"day_prefix\",getDayPrefix(\"day_of_week\"))\\\r\n",
 					".withColumn(\"is_holiday\",getHoliday(\"date\"))"
 				],
-				"execution_count": 87
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(dim_date_df)"
+				],
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
