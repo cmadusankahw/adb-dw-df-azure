@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b501943d-cc57-48b5-b16f-d230ef3dc468"
+				"spark.autotune.trackingId": "d2a8d671-e6a9-4094-94cb-3e689762ce00"
 			}
 		},
 		"metadata": {
@@ -305,10 +305,31 @@
 					"        pass\r\n",
 					"\r\n",
 					"\r\n",
-					"# getProductVolume = udf(lambda z: get_product_volume(z))\r\n",
-					"# getPackageType = udf(lambda z: get_package_type(z))"
+					"\"\"\"\r\n",
+					"    Generic UDF to get product volume\r\n",
+					"\"\"\"\r\n",
+					"def get_product_volume(col_arr):\r\n",
+					"    try:\r\n",
+					"        return float(col_arr[0]) * float(col_arr[1]) * float(col_arr[2])\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to get package type\r\n",
+					"\"\"\"\r\n",
+					"def get_package_type(col_arr):\r\n",
+					"    try:\r\n",
+					"        if float(col_arr[0]) < 3000 or float(col_arr[1])< 500:\r\n",
+					"            return \"Small\"\r\n",
+					"        if float(col_arr[0]) < 6000 or float(col_arr[1])< 1000:\r\n",
+					"            return \"Medium\"\r\n",
+					"        if float(col_arr[0]) > 5999 or float(col_arr[1])> 999:\r\n",
+					"            return \"Large\"\r\n",
+					"    except:\r\n",
+					"        pass"
 				],
-				"execution_count": 45
+				"execution_count": 55
 			},
 			{
 				"cell_type": "markdown",
@@ -663,7 +684,7 @@
 					"# to drop\r\n",
 					"# supplier_id"
 				],
-				"execution_count": 43
+				"execution_count": 53
 			},
 			{
 				"cell_type": "markdown",
