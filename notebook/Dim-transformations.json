@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3ff5b9a5-bfbb-476f-95bd-133a242bd5a9"
+				"spark.autotune.trackingId": "3ed554e3-0760-4ff4-abf3-2a862da53614"
 			}
 		},
 		"metadata": {
@@ -73,7 +73,7 @@
 					"import re\r\n",
 					"import calendar\r\n",
 					"import pandas\r\n",
-					"from pandas.tseries.holiday import USFederalHolidayCalendar as holicalendar"
+					"import holidays"
 				],
 				"execution_count": 94
 			},
@@ -816,13 +816,37 @@
 					"        pass\r\n",
 					"\r\n",
 					"\r\n",
-					"de_holidays = holidays.DE()\r\n",
-					"#date(2021-07-22) in de_holidays\r\n",
-					"\r\n",
-					"rslt_df['Holiday'] = rslt_df['Date'].isin(holidays.DE(years=[2018,2019,2020,2021]))\r\n",
-					"rslt_df"
+					"def getholiday(col):\r\n",
+					"    try:\r\n",
+					"        for d in holidays.UnitedStates(years=[2016,2017,1018,2019]).items():\r\n",
+					"            if str(date[0]) == col:\r\n",
+					"                return \"YES\"\r\n",
+					"        return \"NO\"\r\n",
+					"    except:\r\n",
+					"        pass"
 				],
 				"execution_count": 91
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"cal = holicalendar()\r\n",
+					"holidays = cal.holidays(start=sdate, end=edate)\r\n",
+					"\r\n",
+					"sdate.isin(holidays)"
+				],
+				"execution_count": 95
 			},
 			{
 				"cell_type": "code",
@@ -866,7 +890,10 @@
 					".withColumn(\"week_of_year\",getWeekYear(\"date\"))\\\r\n",
 					".withColumn(\"is_leap_year\",getLeapYear(\"date\"))\\\r\n",
 					".withColumn(\"is_weekend\",getWeekend(\"date\"))\\\r\n",
-					".withColumn(\"day_prefix\",getDayPrefix(\"date\"))\\"
+					".withColumn(\"day_prefix\",getDayPrefix(\"date\"))\\\r\n",
+					".withColumn(\"is_holiday\",getDayPrefix(\"date\"))\\\r\n",
+					"\r\n",
+					"dim_date_df['is_holiday'] = dim_date_df['date'].isin(holidays)"
 				],
 				"execution_count": 87
 			},
