@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "50e67092-6adb-4085-8714-f52b2d034576"
+				"spark.autotune.trackingId": "3ff5b9a5-bfbb-476f-95bd-133a242bd5a9"
 			}
 		},
 		"metadata": {
@@ -72,9 +72,10 @@
 					"import ast\r\n",
 					"import re\r\n",
 					"import calendar\r\n",
-					"import pandas"
+					"import pandas\r\n",
+					"from pandas.tseries.holiday import USFederalHolidayCalendar as holicalendar"
 				],
-				"execution_count": 75
+				"execution_count": 94
 			},
 			{
 				"cell_type": "code",
@@ -802,7 +803,24 @@
 					"        elif col == 7 or col == \"7\":\r\n",
 					"            return \"SUNDAY\"\r\n",
 					"    except:\r\n",
-					"        pass"
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"def getweekend(col):\r\n",
+					"    try:\r\n",
+					"        if col == 6 or col == \"6\" or col == 7 or col == \"7\":\r\n",
+					"            return \"YES\"\r\n",
+					"        else:\r\n",
+					"            return \"NO\"\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"de_holidays = holidays.DE()\r\n",
+					"#date(2021-07-22) in de_holidays\r\n",
+					"\r\n",
+					"rslt_df['Holiday'] = rslt_df['Date'].isin(holidays.DE(years=[2018,2019,2020,2021]))\r\n",
+					"rslt_df"
 				],
 				"execution_count": 91
 			},
@@ -836,6 +854,7 @@
 					"getWeekYear = udf(lambda z: getweekyear(z))\r\n",
 					"getLeapYear = udf(lambda z: getleapyear(z))\r\n",
 					"getDayPrefix = udf(lambda z: getdayprefix(z))\r\n",
+					"getWeekend = udf(lambda z: getweekend(z))\r\n",
 					"\r\n",
 					"dim_date_df = spark.createDataFrame(data=dim_finalized_list, schema = [\"sk_date\",\"date\"])\\\r\n",
 					".withColumn(\"date\",getDate(\"date\"))\\\r\n",
@@ -846,6 +865,7 @@
 					".withColumn(\"day_of_week\",getWeekDay(\"date\"))\\\r\n",
 					".withColumn(\"week_of_year\",getWeekYear(\"date\"))\\\r\n",
 					".withColumn(\"is_leap_year\",getLeapYear(\"date\"))\\\r\n",
+					".withColumn(\"is_weekend\",getWeekend(\"date\"))\\\r\n",
 					".withColumn(\"day_prefix\",getDayPrefix(\"date\"))\\"
 				],
 				"execution_count": 87
