@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "36ae0261-8e27-42b6-81d6-20b20a8fe303"
+				"spark.autotune.trackingId": "8a4da286-b5f6-4560-992d-a4286835c04c"
 			}
 		},
 		"metadata": {
@@ -327,9 +327,42 @@
 					"        if float(col_arr[0]) > 5999 or float(col_arr[1])> 999:\r\n",
 					"            return \"Large\"\r\n",
 					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to check discount\r\n",
+					"\"\"\"\r\n",
+					"def check_discount(col):\r\n",
+					"    try:\r\n",
+					"        if int(col)> 0:\r\n",
+					"            return \"YES\"\r\n",
+					"        else:\r\n",
+					"            return \"NO\"\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to check delayed deliveries\r\n",
+					"\"\"\"\r\n",
+					"def chekc_delayed_delivery(col_arr):\r\n",
+					"    try:\r\n",
+					"        est_month = int((col_arr[0])[5:7])\r\n",
+					"        est_date  = int((col_arr[0])[8:10])\r\n",
+					"        act_month  = int((col_arr[1])[5:7])\r\n",
+					"        act_date  = int((col_arr[1])[8:10])\r\n",
+					"        if act_month > est_month:\r\n",
+					"            return \"YES\"\r\n",
+					"        elif act_date> est_date:\r\n",
+					"            return \"YES\"\r\n",
+					"        else:\r\n",
+					"            return \"NO\"\r\n",
+					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 55
+				"execution_count": 61
 			},
 			{
 				"cell_type": "markdown",
@@ -550,75 +583,44 @@
 					}
 				},
 				"source": [
-					"getHasDiscount = \r\n",
-					"getIsDeliveryDelayed = \r\n",
+					"getHasDiscount = udf(lambda z: check_discount(z))\r\n",
+					"getIsDeliveryDelayed = udf(lambda z: chekc_delayed_delivery(z))\r\n",
 					"\r\n",
-					"order_details_df = order_df.select(\"order_id\",\"order_status\",\"delivery_service_id\")\\\r\n",
+					"order_discount_df = order_items_df.select(col(\"order_id\"),col(\"product_id\")).distinct()\\\r\n",
+					".join(products_df.select(\"product_id\",\"product_discount\"), how = \"left\", on =\"product_id\")\\\r\n",
+					".groupBy(\"order_id\").agg({\"product_discount\":\"sum\"})\r\n",
+					"\r\n",
+					"order_df.select(\"order_id\",\"order_status\",\"delivery_service_id\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\")\\\r\n",
+					".createOrReplaceTempView(\"orderdetails\")\r\n",
+					"\r\n",
+					"order_details_df = sk_generator('order_id','sk_order_details','orderdetails')\\\r\n",
+					".join(order_payments_df.select(col(\"order_id\"), col(\"payment_type\")).distinct(), how=\"left\", on = \"order_id\")\\\r\n",
+					".join(order_discount_df, how=\"left\", on = \"order_id\")\\\r\n",
 					".withColumn(\"is_returned\",lit(\"NO\"))\\\r\n",
-					".withColumn(\"has_discount\",lit(\"NO\"))\\\r\n",
+					".withColumn(\"has_discount\",getHasDiscount(\"sum(product_discount)\"))\\\r\n",
+					".withColumn(\"is_delivery_delayed\",getIsDeliveryDelayed(array(\"order_delivered_customer_date\",\"order_estimated_delivery_date\")))\\\r\n",
+					".drop(\"order_delivered_customer_date\",\"order_estimated_delivery_date\",\"sum(product_discount)\")\r\n",
 					"\r\n",
 					"# order_df --> FACT\r\n",
 					"# order_purchase_timestamp\r\n",
 					"# order_approved_at\r\n",
 					"# order_delivered_carrier_date\r\n",
 					"# order_delivered_customer_date\r\n",
-					"# order_estimated_delivery_date"
+					"# order_estimated_delivery_date\r\n",
+					"\r\n",
+					"# order_items_df -> FACt\r\n",
+					"# order_id\r\n",
+					"# order_item_id\r\n",
+					"# shipping_limit_date\r\n",
+					"# price\r\n",
+					"# freight_value\r\n",
+					"\r\n",
+					"# order_payments_df -> FACT\r\n",
+					"# payment_installments\r\n",
+					"# payment_value\r\n",
+					"# payment_sequential"
 				],
-				"execution_count": 39
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"order_items_df.printSchema()"
-				],
-				"execution_count": 40
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"order_payments_df.printSchema()"
-				],
-				"execution_count": 41
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
+				"execution_count": 69
 			},
 			{
 				"cell_type": "markdown",
