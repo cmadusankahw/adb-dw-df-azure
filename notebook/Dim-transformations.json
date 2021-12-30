@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "db465d4c-8b11-48c6-9d2b-80d2b3ffe848"
+				"spark.autotune.trackingId": "90876f4e-21d7-4e0e-8a20-6c1baa3318a9"
 			}
 		},
 		"metadata": {
@@ -75,7 +75,7 @@
 					"import pandas\r\n",
 					"import holidays"
 				],
-				"execution_count": 94
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
