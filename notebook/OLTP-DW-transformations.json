@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2118b2ce-ec64-4f16-b461-fd06a994dfd9"
+				"spark.autotune.trackingId": "36ae0261-8e27-42b6-81d6-20b20a8fe303"
 			}
 		},
 		"metadata": {
@@ -550,7 +550,19 @@
 					}
 				},
 				"source": [
-					"order_df.printSchema()"
+					"getHasDiscount = \r\n",
+					"getIsDeliveryDelayed = \r\n",
+					"\r\n",
+					"order_details_df = order_df.select(\"order_id\",\"order_status\",\"delivery_service_id\")\\\r\n",
+					".withColumn(\"is_returned\",lit(\"NO\"))\\\r\n",
+					".withColumn(\"has_discount\",lit(\"NO\"))\\\r\n",
+					"\r\n",
+					"# order_df --> FACT\r\n",
+					"# order_purchase_timestamp\r\n",
+					"# order_approved_at\r\n",
+					"# order_delivered_carrier_date\r\n",
+					"# order_delivered_customer_date\r\n",
+					"# order_estimated_delivery_date"
 				],
 				"execution_count": 39
 			},
