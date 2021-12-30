@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3ed554e3-0760-4ff4-abf3-2a862da53614"
+				"spark.autotune.trackingId": "ff527ce5-fc27-4355-8831-69a083d0e858"
 			}
 		},
 		"metadata": {
@@ -841,27 +841,6 @@
 					}
 				},
 				"source": [
-					"cal = holicalendar()\r\n",
-					"holidays = cal.holidays(start=sdate, end=edate)\r\n",
-					"\r\n",
-					"sdate.isin(holidays)"
-				],
-				"execution_count": 95
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
 					"sdate = datetime.date(2016,1,1)   # start date\r\n",
 					"edate = datetime.date(2019,12,31)   # end date\r\n",
 					"date_list = pandas.date_range(sdate,edate-datetime.timedelta(days=1),freq='d')\r\n",
@@ -879,6 +858,7 @@
 					"getLeapYear = udf(lambda z: getleapyear(z))\r\n",
 					"getDayPrefix = udf(lambda z: getdayprefix(z))\r\n",
 					"getWeekend = udf(lambda z: getweekend(z))\r\n",
+					"getHoliday = udf(lambda z: getholiday(z))\r\n",
 					"\r\n",
 					"dim_date_df = spark.createDataFrame(data=dim_finalized_list, schema = [\"sk_date\",\"date\"])\\\r\n",
 					".withColumn(\"date\",getDate(\"date\"))\\\r\n",
@@ -891,30 +871,9 @@
 					".withColumn(\"is_leap_year\",getLeapYear(\"date\"))\\\r\n",
 					".withColumn(\"is_weekend\",getWeekend(\"date\"))\\\r\n",
 					".withColumn(\"day_prefix\",getDayPrefix(\"date\"))\\\r\n",
-					".withColumn(\"is_holiday\",getDayPrefix(\"date\"))\\\r\n",
-					"\r\n",
-					"dim_date_df['is_holiday'] = dim_date_df['date'].isin(holidays)"
+					".withColumn(\"is_holiday\",getHoliday(\"date\"))"
 				],
 				"execution_count": 87
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(dim_date_df)"
-				],
-				"execution_count": 89
 			},
 			{
 				"cell_type": "markdown",
