@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e761b2e0-951e-4479-b8ba-6196f8ac12db"
+				"spark.autotune.trackingId": "742f8b27-2724-49f7-8c8a-b8bf6a75be2b"
 			}
 		},
 		"metadata": {
@@ -68,11 +68,11 @@
 					"from pyspark.sql.functions import udf\r\n",
 					"from pyspark.sql.utils import AnalysisException\r\n",
 					"from pyspark.sql import Row\r\n",
-					"from datetime import datetime, timezone\r\n",
+					"import datetime\r\n",
 					"import ast\r\n",
 					"import re"
 				],
-				"execution_count": 1
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
@@ -103,7 +103,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 2
+				"execution_count": 25
 			},
 			{
 				"cell_type": "code",
@@ -185,7 +185,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 3
+				"execution_count": 26
 			},
 			{
 				"cell_type": "markdown",
@@ -227,7 +227,7 @@
 					"    Generic UDF to calculate Age\r\n",
 					"\"\"\"\r\n",
 					"def calc_age(col):\r\n",
-					"    cur_year = int(datetime.date.today().strftime(\"%Y\"))\r\n",
+					"    cur_year = int(datetime.datetime.now().date().strftime(\"%Y\"))\r\n",
 					"    try:\r\n",
 					"        return (cur_year - int(col[0:4]))\r\n",
 					"    except:\r\n",
@@ -258,7 +258,7 @@
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": null
+				"execution_count": 27
 			},
 			{
 				"cell_type": "markdown",
@@ -270,26 +270,8 @@
 					}
 				},
 				"source": [
-					"Customers Pre Processing"
+					"Customer Dimension"
 				]
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"customer_df.printSchema()"
-				],
-				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -308,10 +290,34 @@
 					"getBirthYear = udf(lambda z: getsubstring(z,0,4))\r\n",
 					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
 					"getAge = udf(lambda z: calc_age(z))\r\n",
-					"ageCategoryBucketizer = udf(lambda z: bucketize(z,[0,18,23,39,55,64,199],[\"Children\",\"GenerationZ\",\"Millenials\",\"GenX\",\"BabyBoomer\",\"Silent\"]),StringType())\r\n",
-					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())"
+					"generationBucketizer = udf(lambda z: bucketize(z,[18,23,39,55,64,199],[\"Children\",\"GenerationZ\",\"Millenials\",\"GenX\",\"BabyBoomer\",\"Silent\"]),StringType())\r\n",
+					"ageCategoryBucketizer = udf(lambda z: bucketize(z,[18,25,35,45,55,65,199],[\"0-18\",\"19-25\",\"26-35\",\"36-45\",\"46-55\",\"56-65\",\"66+\"]),StringType())\r\n",
+					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())\r\n",
+					"getPhoneOperator = udf(lambda z: getsubstring(z,0,3))\r\n",
+					"\r\n",
+					"customer_df = customer_df.withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
+					".withColumn( 'birth_month', getBirthMonth('birth_date'))\\\r\n",
+					".withColumn( 'age', getAge('birth_date'))\\\r\n",
+					".withColumn( 'generation', generationBucketizer('age'))\\\r\n",
+					".withColumn( 'age_category', ageCategoryBucketizer('age'))\\\r\n",
+					".withColumn( 'social_state', socialStateBucketizer('income'))\\\r\n",
+					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
+					".drop('phone_no')"
 				],
-				"execution_count": null
+				"execution_count": 31
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Delivery Services Dimension"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -324,13 +330,12 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"collapsed": false
+					}
 				},
 				"source": [
-					"display(customer_df.select(\"phone_no\").distinct())"
+					""
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -361,7 +366,13 @@
 				"source": [
 					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\")\r\n",
 					"\r\n",
-					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_customers.csv\")"
+					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_customer.csv\")\r\n",
+					"delivery_services_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_delivery_service.csv\")\r\n",
+					"supplier_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_supplier.csv\")\r\n",
+					"seller_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_seller.csv\")\r\n",
+					"product_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_product.csv\")\r\n",
+					"order_details_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_order_details.csv\")\r\n",
+					"order_review_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_order_review.csv\")"
 				],
 				"execution_count": 15
 			},
@@ -384,7 +395,14 @@
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".option(\"sep\",\"|\")\\\r\n",
-					".save(customer_processed_path)"
+					".save(customer_processed_path)\r\n",
+					"\r\n",
+					"delivery_services_df.write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".option(\"sep\",\"|\")\\\r\n",
+					".save(delivery_services_processed_path)"
 				],
 				"execution_count": 16
 			},
