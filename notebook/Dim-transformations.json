@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b66764c3-384f-42f5-ab62-463bfecbf0e2"
+				"spark.autotune.trackingId": "d27f27fe-27d0-4d80-a3d2-6f38c64df858"
 			}
 		},
 		"metadata": {
@@ -899,7 +899,7 @@
 					"geolocation_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_geolocation.csv\")\r\n",
 					"date_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_date.csv\")"
 				],
-				"execution_count": 15
+				"execution_count": 29
 			},
 			{
 				"cell_type": "code",
@@ -969,7 +969,7 @@
 					".option(\"header\", \"true\")\\\r\n",
 					".save(date_processed_path)"
 				],
-				"execution_count": 16
+				"execution_count": 30
 			}
 		]
 	}
