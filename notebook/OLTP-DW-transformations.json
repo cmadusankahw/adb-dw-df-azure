@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "50ae2aaf-0587-43ce-bab7-9dc904ca60bb"
+				"spark.autotune.trackingId": "5b0e04ff-5fd0-4e4f-992b-7a21a60e6d59"
 			}
 		},
 		"metadata": {
@@ -288,9 +288,23 @@
 					"    try:\r\n",
 					"        return str(list(set(col)))\r\n",
 					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to get review sentiment\r\n",
+					"\"\"\"\r\n",
+					"def get_review_sentiment(col):\r\n",
+					"    try:\r\n",
+					"        if int(col)>3:\r\n",
+					"            return \"Very Satisfied\"\r\n",
+					"        elif int(col)==3:\r\n",
+					"            return \"Moderate\"\r\n",
+					"        elif int(col)<3:\r\n",
+					"            return \"Not Satisfied\"\r\n",
+					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 28
+				"execution_count": 45
 			},
 			{
 				"cell_type": "markdown",
@@ -403,7 +417,7 @@
 					"\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": 18
+				"execution_count": 39
 			},
 			{
 				"cell_type": "markdown",
@@ -461,6 +475,37 @@
 					}
 				},
 				"source": [
+					"GeoLocation Dimension"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"geolocation_df = sk_generator('geolocation_zip_code_prefix','sk_geolocation','geolocation')"
+				],
+				"execution_count": 38
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"Order Details Dimension"
 				]
 			},
@@ -493,25 +538,6 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(order_df)"
-				],
-				"execution_count": 48
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
 					}
 				},
 				"source": [
@@ -530,50 +556,12 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(order_items_df)"
-				],
-				"execution_count": 47
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
 					}
 				},
 				"source": [
 					"order_payments_df.printSchema()"
 				],
 				"execution_count": 41
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(order_payments_df)"
-				],
-				"execution_count": 46
 			},
 			{
 				"cell_type": "code",
@@ -620,46 +608,12 @@
 					}
 				},
 				"source": [
-					"order_reviews_df.printSchema()"
+					"getReviewSentiment = udf(lambda z: get_review_sentiment(z))\r\n",
+					"\r\n",
+					"order_reviews_df = sk_generator('review_id','sk_review','orderreviews')\\\r\n",
+					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))"
 				],
-				"execution_count": 42
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"display(order_reviews_df)"
-				],
-				"execution_count": 45
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
+				"execution_count": 46
 			},
 			{
 				"cell_type": "markdown",
