@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "03804af7-1f37-4fc1-8cd4-d71436fc858e"
+				"spark.autotune.trackingId": "e761b2e0-951e-4479-b8ba-6196f8ac12db"
 			}
 		},
 		"metadata": {
@@ -233,7 +233,30 @@
 					"    except:\r\n",
 					"        pass\r\n",
 					"\r\n",
-					"def social_status()"
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to bucketize given column values into a given no of buckets\r\n",
+					"\"\"\"\r\n",
+					"def bucketize(col,bucket_margins,bucket_names):\r\n",
+					"    try:\r\n",
+					"        for i in range(len(bucket_margins)):\r\n",
+					"            if col < bucket_margins[i]:\r\n",
+					"                return bucket_names[i]\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to bucketize non-numeric columns\r\n",
+					"\"\"\"\r\n",
+					"def social_state(col,bucket_values,bucket_names):\r\n",
+					"    try:\r\n",
+					"        for i in range(len(bucket_values)):\r\n",
+					"            if col == bucket_values[i]:\r\n",
+					"                return bucket_names[i]\r\n",
+					"        else:\r\n",
+					"            return bucket_names[-1]\r\n",
+					"    except:\r\n",
+					"        pass"
 				],
 				"execution_count": null
 			},
@@ -284,7 +307,9 @@
 				"source": [
 					"getBirthYear = udf(lambda z: getsubstring(z,0,4))\r\n",
 					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
-					"getage = udf(lambda z: calc_age(z))"
+					"getAge = udf(lambda z: calc_age(z))\r\n",
+					"ageCategoryBucketizer = udf(lambda z: bucketize(z,[0,18,23,39,55,64,199],[\"Children\",\"GenerationZ\",\"Millenials\",\"GenX\",\"BabyBoomer\",\"Silent\"]),StringType())\r\n",
+					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())"
 				],
 				"execution_count": null
 			},
@@ -303,9 +328,9 @@
 					"collapsed": false
 				},
 				"source": [
-					"display(customer_df.select(\"birth_date\"))"
+					"display(customer_df.select(\"phone_no\").distinct())"
 				],
-				"execution_count": 5
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
