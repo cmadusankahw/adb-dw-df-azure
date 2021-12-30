@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c1777d96-cb72-4fc5-9747-fffbde5badc5"
+				"spark.autotune.trackingId": "61d73962-391f-4169-8291-27a10c6d62ef"
 			}
 		},
 		"metadata": {
@@ -103,7 +103,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 11
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -185,7 +185,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 12
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -197,7 +197,7 @@
 					}
 				},
 				"source": [
-					"Pre Processing"
+					"Generic UDF Definition"
 				]
 			},
 			{
@@ -214,9 +214,85 @@
 					}
 				},
 				"source": [
-					""
+					"\"\"\"\r\n",
+					"    Generic UDF to get a substring of a given column\r\n",
+					"\"\"\"\r\n",
+					"def getsubstring(col,start,end):\r\n",
+					"    try:\r\n",
+					"        return str(col)[start:end]\r\n",
+					"    except:\r\n",
+					"        pass"
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Customers Pre Processing"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_df.printSchema()"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"getBirthYear = udf(lambda z: getsubstring(z,0,4))\r\n",
+					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(customer_df.select(\"birth_date\"))"
+				],
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
