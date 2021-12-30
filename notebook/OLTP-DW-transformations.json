@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "61d73962-391f-4169-8291-27a10c6d62ef"
+				"spark.autotune.trackingId": "03804af7-1f37-4fc1-8cd4-d71436fc858e"
 			}
 		},
 		"metadata": {
@@ -221,7 +221,19 @@
 					"    try:\r\n",
 					"        return str(col)[start:end]\r\n",
 					"    except:\r\n",
-					"        pass"
+					"        pass\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to calculate Age\r\n",
+					"\"\"\"\r\n",
+					"def calc_age(col):\r\n",
+					"    cur_year = int(datetime.date.today().strftime(\"%Y\"))\r\n",
+					"    try:\r\n",
+					"        return (cur_year - int(col[0:4]))\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"def social_status()"
 				],
 				"execution_count": null
 			},
@@ -271,7 +283,8 @@
 				},
 				"source": [
 					"getBirthYear = udf(lambda z: getsubstring(z,0,4))\r\n",
-					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))"
+					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
+					"getage = udf(lambda z: calc_age(z))"
 				],
 				"execution_count": null
 			},
