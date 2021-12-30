@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9710985a-7414-4fcb-b0c3-3d99eb72285e"
+				"spark.autotune.trackingId": "e57d47a7-7034-4c41-9cb2-caf4fe5103e4"
 			}
 		},
 		"metadata": {
@@ -70,7 +70,8 @@
 					"from pyspark.sql import Row\r\n",
 					"import datetime\r\n",
 					"import ast\r\n",
-					"import re"
+					"import re\r\n",
+					"import calendar"
 				],
 				"execution_count": 24
 			},
@@ -214,6 +215,13 @@
 					}
 				},
 				"source": [
+					"\"\"\"\r\n",
+					"    Generic UDF to generate surrogate key for a table\r\n",
+					"\"\"\"\r\n",
+					"def sk_generator(keycol,df):\r\n",
+					"    return spark.sql('select row_number() over (order by \"{}\") as num, * from {}'.format(keycol,df))\r\n",
+					"\r\n",
+					"\r\n",
 					"\"\"\"\r\n",
 					"    Generic UDF to get a substring of a given column\r\n",
 					"\"\"\"\r\n",
