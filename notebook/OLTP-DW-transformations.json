@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b551a8bf-6a0e-4f3a-9b03-24e6300075fb"
+				"spark.autotune.trackingId": "26fcad3c-00ff-4b71-847c-4321835608ce"
 			}
 		},
 		"metadata": {
@@ -302,7 +302,11 @@
 					"        elif int(col)<3:\r\n",
 					"            return \"Not Satisfied\"\r\n",
 					"    except:\r\n",
-					"        pass"
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"# getProductVolume = udf(lambda z: get_product_volume(z))\r\n",
+					"# getPackageType = udf(lambda z: get_package_type(z))"
 				],
 				"execution_count": 45
 			},
@@ -727,19 +731,6 @@
 					".save(delivery_services_processed_path)"
 				],
 				"execution_count": 16
-			},
-			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				]
 			}
 		]
 	}
