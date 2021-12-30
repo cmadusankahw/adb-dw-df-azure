@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8a4da286-b5f6-4560-992d-a4286835c04c"
+				"spark.autotune.trackingId": "d500832f-b027-4dbd-bea9-e57508d39745"
 			}
 		},
 		"metadata": {
@@ -71,9 +71,10 @@
 					"import datetime\r\n",
 					"import ast\r\n",
 					"import re\r\n",
-					"import calendar"
+					"import calendar\r\n",
+					"import pandas"
 				],
-				"execution_count": 2
+				"execution_count": 75
 			},
 			{
 				"cell_type": "code",
@@ -550,7 +551,7 @@
 					}
 				},
 				"source": [
-					"geolocation_df = sk_generator('geolocation_zip_code_prefix','sk_geolocation','geolocation')\\\r\n",
+					"geolocation_df = geolocation_df\\\r\n",
 					".withColumnRenamed('geolocation_lat','geolocation_lattitude')\\\r\n",
 					".withColumnRenamed('geolocation_lng','geolocation_longtitude')"
 				],
@@ -727,9 +728,49 @@
 					}
 				},
 				"source": [
-					""
+					"sdate = datetime.date(2016,1,1)   # start date\r\n",
+					"edate = datetime.date(2019,12,31)   # end date\r\n",
+					"pandas.date_range(sdate,edate-datetime.timedelta(days=1),freq='d')"
 				],
-				"execution_count": null
+				"execution_count": 76
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(order_df.select(\"order_purchase_timestamp\").distinct())"
+				],
+				"execution_count": 74
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(order_items_df.select(\"shipping_limit_date\").distinct())"
+				],
+				"execution_count": 73
 			},
 			{
 				"cell_type": "markdown",
