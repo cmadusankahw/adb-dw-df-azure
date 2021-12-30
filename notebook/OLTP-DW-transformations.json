@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3f6455d0-8e91-42c4-93ac-3b770f905ade"
+				"spark.autotune.trackingId": "50ae2aaf-0587-43ce-bab7-9dc904ca60bb"
 			}
 		},
 		"metadata": {
@@ -73,7 +73,7 @@
 					"import re\r\n",
 					"import calendar"
 				],
-				"execution_count": 24
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -104,7 +104,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 25
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -186,7 +186,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 26
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -218,8 +218,8 @@
 					"\"\"\"\r\n",
 					"    Generic UDF to generate surrogate key for a table\r\n",
 					"\"\"\"\r\n",
-					"def sk_generator(keycol,df):\r\n",
-					"    return spark.sql('select row_number() over (order by \"{}\") as num, * from {}'.format(keycol,df))\r\n",
+					"def sk_generator(keycol,colname,df):\r\n",
+					"    return spark.sql('select row_number() over (order by \"{}\") as {}, * from {}'.format(keycol,colname,df))\r\n",
 					"\r\n",
 					"\r\n",
 					"\"\"\"\r\n",
@@ -278,9 +278,19 @@
 					"        if int(col)> limits[2]:\r\n",
 					"            return \"Mass-Scale\"\r\n",
 					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to get unque list\r\n",
+					"\"\"\"\r\n",
+					"def get_unique_cat(col):\r\n",
+					"    try:\r\n",
+					"        return str(list(set(col)))\r\n",
+					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 27
+				"execution_count": 28
 			},
 			{
 				"cell_type": "markdown",
@@ -317,9 +327,7 @@
 					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())\r\n",
 					"getPhoneOperator = udf(lambda z: getsubstring(z,0,3))\r\n",
 					"\r\n",
-					"customer_sk_df = sk_generator('customer_id',customer_df)\r\n",
-					"\r\n",
-					"customer_df = customer_df.join(customer_sk_df, how = \"left\", on=\"customer_id\")\\\r\n",
+					"customer_df = sk_generator('customer_id','sk_customer','customer')\\\r\n",
 					".withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
 					".withColumn( 'birth_month', getBirthMonth('birth_date'))\\\r\n",
 					".withColumn( 'age', getAge('birth_date'))\\\r\n",
@@ -329,7 +337,7 @@
 					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
 					".drop('phone_no')"
 				],
-				"execution_count": 31
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",
@@ -358,12 +366,11 @@
 					}
 				},
 				"source": [
-					"delivery_services_sk_df = sk_generator('delivery_service_id',delivery_services_df)\r\n",
-					"delivery_services_df = delivery_services_df.join(delivery_services_sk_df, how = \"left\", on=\"delivery_service_id\")\r\n",
+					"delivery_services_df = sk_generator('delivery_service_id','sk_delivery_service','deliveryservices')\r\n",
 					"\r\n",
 					"# delivery_service_duration"
 				],
-				"execution_count": 33
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -392,12 +399,11 @@
 					}
 				},
 				"source": [
-					"supplier_sk_df = sk_generator('supplier_id',supplier_df)\r\n",
-					"supplier_df = supplier_df.join(supplier_sk_df, how = \"left\", on=\"supplier_id\")\r\n",
+					"supplier_df = sk_generator('supplier_id','sk_supplier','supplier')\r\n",
 					"\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": 35
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
@@ -426,23 +432,24 @@
 					}
 				},
 				"source": [
-					"getSellerSize  = check_seller_sizer(z,[5,20,100])\r\n",
+					"getSellerSize  = udf(lambda z: check_seller_size(z,[5,20,100]))\r\n",
+					"getUniqueProductCat = udf(lambda z: get_unique_cat(z))\r\n",
 					"\r\n",
 					"seller_product_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
 					".groupBy(\"seller_id\").agg(count('product_id').alias('no_of_products_sold'))\r\n",
 					"\r\n",
 					"seller_product_cat_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
-					".join(products_df.select(col(\"product_id\"),col(\"product_category_name\").distinct(), how=\"left\", on=\"product_id\"))\\\r\n",
+					".join(products_df.select(col(\"product_id\"),col(\"product_category_name\")).distinct(), how=\"left\", on=\"product_id\")\\\r\n",
 					".groupBy(\"seller_id\").agg(collect_list(\"product_category_name\"))\\\r\n",
 					".withColumnRenamed('collect_list(product_category_name)','product_categories_sold')\\\r\n",
-					".withColumn('product_categories_sold', co('product_categories_sold').cast(StringType()))\r\n",
+					".withColumn('product_categories_sold', getUniqueProductCat(col('product_categories_sold')))\r\n",
 					"\r\n",
-					"seller_sk_df = sk_generator(z,'seller_id',seller_df)\r\n",
-					"seller_df = seller_df.join(seller_sk_df, how = \"left\", on=\"seller_id\")\\\r\n",
+					"seller_df = sk_generator('seller_id','sk_seller','seller')\\\r\n",
 					".join(seller_product_df, how = \"left\", on=\"seller_id\")\\\r\n",
-					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")"
+					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")\\\r\n",
+					".withColumn('seller_size', getSellerSize(col('no_of_products_sold')))"
 				],
-				"execution_count": 37
+				"execution_count": 34
 			},
 			{
 				"cell_type": "markdown",
