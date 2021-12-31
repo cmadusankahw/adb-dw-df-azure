@@ -101,10 +101,6 @@
 			{
 				"name": "scd_is_current",
 				"type": "nvarchar"
-			},
-			{
-				"name": "scd_soft_deleted",
-				"type": "nvarchar"
 			}
 		],
 		"typeProperties": {
