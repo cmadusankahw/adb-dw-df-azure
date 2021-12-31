@@ -1,0 +1,67 @@
+{
+	"name": "SupplierSCDFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dim_supplier",
+						"type": "DatasetReference"
+					},
+					"name": "SupplierSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimSupplier",
+						"type": "DatasetReference"
+					},
+					"name": "DimSupplier"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimSupplier",
+						"type": "DatasetReference"
+					},
+					"name": "sinkAllatFirst"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimSupplier",
+						"type": "DatasetReference"
+					},
+					"name": "sinkwithUpdatingSCD"
+				}
+			],
+			"transformations": [
+				{
+					"name": "addingSCDIsCurrent"
+				},
+				{
+					"name": "renameOLTPColumns"
+				},
+				{
+					"name": "LookupForExistingRows"
+				},
+				{
+					"name": "FilterExistingRows"
+				},
+				{
+					"name": "SetIsCurrentToNo"
+				},
+				{
+					"name": "AlterRows"
+				},
+				{
+					"name": "SelectRequiredRows"
+				},
+				{
+					"name": "DropMeasureCols"
+				}
+			],
+			"script": "source(output(\n\t\tsupplier_id as string,\n\t\tsupplier_comapny as string,\n\t\tsupplier_city as string,\n\t\tsupplier_state as string,\n\t\tsupplier_zip_code_prefix as integer,\n\t\tsupplied_quantity_for_month as integer,\n\t\tsupplier_reg_date as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SupplierSource\nsource(output(\n\t\tsk_supplier as integer,\n\t\tsupplier_id as string,\n\t\tsupplier_comapny as string,\n\t\tsupplier_city as string,\n\t\tsupplier_state as string,\n\t\tsupplier_zip_code_prefix as integer,\n\t\tsupplier_reg_date as timestamp,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimSupplier\nDropMeasureCols derive(scd_is_current = \"YES\",\n\t\tscd_created_at = currentTimestamp()) ~> addingSCDIsCurrent\nDimSupplier select(mapColumn(\n\t\tDIM_sk_supplier = sk_supplier,\n\t\tDIM_supplier_id = supplier_id,\n\t\tDIM_supplier_comapny = supplier_comapny,\n\t\tDIM_supplier_city = supplier_city,\n\t\tDIM_supplier_state = supplier_state,\n\t\tDIM_supplier_zip_code_prefix = supplier_zip_code_prefix,\n\t\tDIM_supplier_reg_date = supplier_reg_date,\n\t\tDIM_scd_created_at = scd_created_at,\n\t\tDIM_scd_is_current = scd_is_current\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> renameOLTPColumns\nSupplierSource, renameOLTPColumns lookup(supplier_id == DIM_supplier_id,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupForExistingRows\nLookupForExistingRows filter(!isNull(DIM_supplier_id)) ~> FilterExistingRows\nSelectRequiredRows derive(scd_is_current = \"NO\") ~> SetIsCurrentToNo\nSetIsCurrentToNo alterRow(updateIf(1==1)) ~> AlterRows\nFilterExistingRows select(mapColumn(\n\t\tsk_supplier = DIM_sk_supplier,\n\t\tsupplier_id = DIM_supplier_id,\n\t\tsupplier_comapny = DIM_supplier_comapny,\n\t\tsupplier_city = DIM_supplier_city,\n\t\tsupplier_state = DIM_supplier_state,\n\t\tsupplier_zip_code_prefix = DIM_supplier_zip_code_prefix,\n\t\tsupplier_reg_date = DIM_supplier_reg_date,\n\t\tscd_created_at = DIM_scd_created_at,\n\t\tscd_is_current = DIM_scd_is_current\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nSupplierSource select(mapColumn(\n\t\tsupplier_id,\n\t\tsupplier_comapny,\n\t\tsupplier_city,\n\t\tsupplier_state,\n\t\tsupplier_zip_code_prefix,\n\t\tsupplier_reg_date\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DropMeasureCols\naddingSCDIsCurrent sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_supplier as integer,\n\t\tsupplier_id as string,\n\t\tsupplier_comapny as string,\n\t\tsupplier_city as string,\n\t\tsupplier_state as string,\n\t\tsupplier_zip_code_prefix as integer,\n\t\tsupplier_reg_date as timestamp,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tsupplier_id,\n\t\tsupplier_comapny,\n\t\tsupplier_city,\n\t\tsupplier_state,\n\t\tsupplier_zip_code_prefix,\n\t\tsupplier_reg_date,\n\t\tscd_created_at,\n\t\tscd_is_current\n\t)) ~> sinkAllatFirst\nAlterRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_supplier as integer,\n\t\tsupplier_id as string,\n\t\tsupplier_comapny as string,\n\t\tsupplier_city as string,\n\t\tsupplier_state as string,\n\t\tsupplier_zip_code_prefix as integer,\n\t\tsupplier_reg_date as timestamp,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['sk_supplier'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tsk_supplier,\n\t\tsupplier_id,\n\t\tsupplier_comapny,\n\t\tsupplier_city,\n\t\tsupplier_state,\n\t\tsupplier_zip_code_prefix,\n\t\tsupplier_reg_date,\n\t\tscd_created_at,\n\t\tscd_is_current\n\t)) ~> sinkwithUpdatingSCD"
+		}
+	}
+}
