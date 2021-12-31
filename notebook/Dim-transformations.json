@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9a0ce63f-dac1-4643-945f-3cb0cd837e90"
+				"spark.autotune.trackingId": "bf090cd8-7f15-49d5-8fb3-5f93f329dd68"
 			}
 		},
 		"metadata": {
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -459,7 +459,7 @@
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -507,7 +507,7 @@
 					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
 					".drop('phone_no')"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
@@ -540,7 +540,7 @@
 					"\r\n",
 					"# delivery_service_duration"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -573,7 +573,7 @@
 					"\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": null
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -620,7 +620,7 @@
 					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")\\\r\n",
 					".withColumn('seller_size', getSellerSize(col('no_of_products_sold')))"
 				],
-				"execution_count": null
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -653,7 +653,7 @@
 					".withColumnRenamed('geolocation_lat','geolocation_lattitude')\\\r\n",
 					".withColumnRenamed('geolocation_lng','geolocation_longtitude')"
 				],
-				"execution_count": null
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -722,7 +722,7 @@
 					"\r\n",
 					"# Format dates to remove .00000 part in FACT"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
@@ -757,7 +757,7 @@
 					"order_reviews_df = order_reviews_df\\\r\n",
 					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "markdown",
@@ -800,7 +800,7 @@
 					"# product_quantity_on_hand\r\n",
 					"# product_discount"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "markdown",
@@ -862,7 +862,7 @@
 					".withColumn(\"is_holiday\",getHoliday(\"date\"))\\\r\n",
 					".drop(\"sk_date\") # dropping temp SK"
 				],
-				"execution_count": null
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",
@@ -903,7 +903,7 @@
 					"geolocation_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_geolocation.csv\")\r\n",
 					"date_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_date.csv\")"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
