@@ -24,35 +24,67 @@
 		},
 		"schema": [
 			{
-				"name": "review_id",
+				"name": "product_id",
 				"type": "String"
 			},
 			{
-				"name": "order_id",
+				"name": "product_category_name",
 				"type": "String"
 			},
 			{
-				"name": "review_score",
+				"name": "product_name_lenght",
 				"type": "String"
 			},
 			{
-				"name": "review_comment_title",
+				"name": "product_description_lenght",
 				"type": "String"
 			},
 			{
-				"name": "review_comment_message",
+				"name": "product_photos_quantity",
 				"type": "String"
 			},
 			{
-				"name": "review_creation_date",
+				"name": "product_weight_g",
 				"type": "String"
 			},
 			{
-				"name": "review_answer_timestamp",
+				"name": "product_length_cm",
 				"type": "String"
 			},
 			{
-				"name": "review_sentiment",
+				"name": "product_height_cm",
+				"type": "String"
+			},
+			{
+				"name": "product_width_cm",
+				"type": "String"
+			},
+			{
+				"name": "product_description",
+				"type": "String"
+			},
+			{
+				"name": "unit_price",
+				"type": "String"
+			},
+			{
+				"name": "product_quantity_on_hand",
+				"type": "String"
+			},
+			{
+				"name": "product_discount",
+				"type": "String"
+			},
+			{
+				"name": "product_brand",
+				"type": "String"
+			},
+			{
+				"name": "product_volume",
+				"type": "String"
+			},
+			{
+				"name": "package_type",
 				"type": "String"
 			}
 		]
