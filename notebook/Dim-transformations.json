@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "efda1095-e14f-4fbc-8234-0f8c641b0586"
+				"spark.autotune.trackingId": "dac5c865-0dcc-4086-9826-79332f7dbd76"
 			}
 		},
 		"metadata": {
@@ -75,7 +75,7 @@
 					"import pandas\r\n",
 					"import holidays"
 				],
-				"execution_count": 1
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -459,7 +459,7 @@
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 11
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -767,7 +767,7 @@
 					".withColumn('review_comment_title', cleanDetails(col('review_comment_title')))\\\r\n",
 					".withColumn('review_comment_message', cleanDetails(col('review_comment_message')))"
 				],
-				"execution_count": 22
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -913,7 +913,7 @@
 					"geolocation_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_geolocation.csv\")\r\n",
 					"date_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_date.csv\")"
 				],
-				"execution_count": 26
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
