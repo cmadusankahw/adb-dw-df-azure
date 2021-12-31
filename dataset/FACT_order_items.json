@@ -1,0 +1,24 @@
+{
+	"name": "FACT_order_items",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adb-dw-dm-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "fact_order_items.csv",
+				"folderPath": "data/curated",
+				"fileSystem": "chiransubfs"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
