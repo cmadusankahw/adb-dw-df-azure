@@ -1,0 +1,64 @@
+{
+	"name": "OrderDetailsSCDFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dim_order_details",
+						"type": "DatasetReference"
+					},
+					"name": "OrderDetailsSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimOrderDetails",
+						"type": "DatasetReference"
+					},
+					"name": "DimOrderDetails"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimOrderDetails",
+						"type": "DatasetReference"
+					},
+					"name": "sinkAllatFirst"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimOrderDetails",
+						"type": "DatasetReference"
+					},
+					"name": "sinkwithUpdatingSCD"
+				}
+			],
+			"transformations": [
+				{
+					"name": "addingSCDIsCurrent"
+				},
+				{
+					"name": "renameOLTPColumns"
+				},
+				{
+					"name": "LookupForExistingRows"
+				},
+				{
+					"name": "FilterExistingRows"
+				},
+				{
+					"name": "SetIsCurrentToNo"
+				},
+				{
+					"name": "AlterRows"
+				},
+				{
+					"name": "SelectRequiredRows"
+				}
+			],
+			"script": "source(output(\n\t\torder_id as string,\n\t\torder_status as string,\n\t\tdelivery_service_id as string,\n\t\tpayment_type as string,\n\t\tis_returned as string,\n\t\thas_discount as string,\n\t\tis_delivery_delayed as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> OrderDetailsSource\nsource(output(\n\t\tsk_order_details as integer,\n\t\torder_id as string,\n\t\tpayment_type as string,\n\t\torder_status as string,\n\t\tis_delivery_delayed as string,\n\t\thas_discount as string,\n\t\tis_returned as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimOrderDetails\nOrderDetailsSource derive(scd_is_current = \"YES\",\n\t\tscd_created_at = currentTimestamp()) ~> addingSCDIsCurrent\nDimOrderDetails select(mapColumn(\n\t\tDIM_sk_order_details = sk_order_details,\n\t\tDIM_order_id = order_id,\n\t\tDIM_payment_type = payment_type,\n\t\tDIM_order_status = order_status,\n\t\tDIM_is_delivery_delayed = is_delivery_delayed,\n\t\tDIM_has_discount = has_discount,\n\t\tDIM_is_returned = is_returned,\n\t\tDIM_scd_created_at = scd_created_at,\n\t\tDIM_scd_is_current = scd_is_current\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> renameOLTPColumns\nOrderDetailsSource, renameOLTPColumns lookup(order_id == DIM_order_id,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupForExistingRows\nLookupForExistingRows filter(!isNull(DIM_order_id)) ~> FilterExistingRows\nSelectRequiredRows derive(scd_is_current = \"NO\") ~> SetIsCurrentToNo\nSetIsCurrentToNo alterRow(updateIf(1==1)) ~> AlterRows\nFilterExistingRows select(mapColumn(\n\t\tsk_order_details = DIM_sk_order_details,\n\t\torder_id = DIM_order_id,\n\t\tpayment_type = DIM_payment_type,\n\t\torder_status = DIM_order_status,\n\t\tis_delivery_delayed = DIM_is_delivery_delayed,\n\t\thas_discount = DIM_has_discount,\n\t\tis_returned = DIM_is_returned,\n\t\tscd_created_at = DIM_scd_created_at,\n\t\tscd_is_current = DIM_scd_is_current\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\naddingSCDIsCurrent sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_order_details as integer,\n\t\torder_id as string,\n\t\tpayment_type as string,\n\t\torder_status as string,\n\t\tis_delivery_delayed as string,\n\t\thas_discount as string,\n\t\tis_returned as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\torder_id,\n\t\tpayment_type,\n\t\torder_status,\n\t\tis_delivery_delayed,\n\t\thas_discount,\n\t\tis_returned,\n\t\tscd_created_at,\n\t\tscd_is_current\n\t)) ~> sinkAllatFirst\nAlterRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_order_details as integer,\n\t\torder_id as string,\n\t\tpayment_type as string,\n\t\torder_status as string,\n\t\tis_delivery_delayed as string,\n\t\thas_discount as string,\n\t\tis_returned as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['sk_order_details'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tsk_order_details,\n\t\torder_id,\n\t\tpayment_type,\n\t\torder_status,\n\t\tis_delivery_delayed,\n\t\thas_discount,\n\t\tis_returned,\n\t\tscd_created_at,\n\t\tscd_is_current\n\t)) ~> sinkwithUpdatingSCD"
+		}
+	}
+}
