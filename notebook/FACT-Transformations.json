@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "84a45ea0-913a-40bd-a9ff-523346a1d14d"
+				"spark.autotune.trackingId": "f6d4ddd4-7f0c-472b-94e0-9a4a359ae15b"
 			}
 		},
 		"metadata": {
@@ -32,7 +32,52 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"# DATE Dimension  "
+					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"from pyspark.sql.functions import *\r\n",
+					"from pyspark.sql.functions import udf\r\n",
+					"from pyspark.sql.utils import AnalysisException\r\n",
+					"from pyspark.sql import Row\r\n",
+					"import datetime\r\n",
+					"import ast\r\n",
+					"import re\r\n",
+					"import pandas"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
 				],
 				"execution_count": null
 			}
