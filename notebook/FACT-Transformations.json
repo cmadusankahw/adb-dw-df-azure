@@ -3,6 +3,10 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "adbsparkpool",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -13,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f6d4ddd4-7f0c-472b-94e0-9a4a359ae15b"
+				"spark.autotune.trackingId": "c548f899-987e-48e2-87ae-4e87356e041f"
 			}
 		},
 		"metadata": {
@@ -21,10 +25,25 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03e69755-ef75-48a3-b96f-506247a595b8/resourceGroups/azure-ceritifications-training/providers/Microsoft.Synapse/workspaces/adb-dw-dm-synapse/bigDataPools/adbsparkpool",
+				"name": "adbsparkpool",
+				"type": "Spark",
+				"endpoint": "https://adb-dw-dm-synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/adbsparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -43,7 +62,7 @@
 					"import re\r\n",
 					"import pandas"
 				],
-				"execution_count": null
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -59,9 +78,18 @@
 					}
 				},
 				"source": [
+					"account_name = \"chiransubdl\"\r\n",
+					"container_name = \"chiransubfs\"\r\n",
+					"\r\n",
+					"order_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/orders.csv\")\r\n",
+					"order_items_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_items.csv\")\r\n",
+					"order_payments_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
+					"product_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
+					"delivey_service_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
+					"supplier_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -77,7 +105,130 @@
 					}
 				},
 				"source": [
-					""
+					"order_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_raw_path)\r\n",
+					"order_df.createOrReplaceTempView(\"order\")\r\n",
+					"\r\n",
+					"order_items_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_items_raw_path)\r\n",
+					"order_items_df.createOrReplaceTempView(\"orderitems\")\r\n",
+					"\r\n",
+					"order_payments_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(order_payments_raw_path)\r\n",
+					"order_payments_df.createOrReplaceTempView(\"orderpayments\")"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\"\"\"\r\n",
+					"    Generic UDF to format order\r\n",
+					"\"\"\"\r\n",
+					"def reformat_date(col):\r\n",
+					"    try:\r\n",
+					"        return str(col)[0:10]\r\n",
+					"    except:\r\n",
+					"        pass"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Transform FACT Order Items"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"transformDate = udf(lambda z: reformat_date(z))\r\n",
+					"\r\n",
+					"order_items_df = order_items_df\\\r\n",
+					".join(order_df.select(\"order_id\",\"customer_id\",\"order_approved_at\",\"order_purchase_timestamp\",\"order_delivered_carrier_date\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\",\"delivery_service_id\"), on=\"order_id\",how=\"left\")\\\r\n",
+					".withColumn(\"order_approved_at\", transformDate(\"order_approved_at\"))\\\r\n",
+					".withColumn(\"order_delivered_carrier_date\", transformDate(\"order_delivered_carrier_date\"))\\\r\n",
+					".withColumn(\"order_delivered_customer_date\", transformDate(\"order_delivered_customer_date\"))\\\r\n",
+					".withColumn(\"order_estimated_delivery_date\", transformDate(\"order_estimated_delivery_date\"))\\\r\n",
+					".withColumn(\"order_purchase_timestamp\", transformDate(\"order_purchase_timestamp\"))\\\r\n",
+					".withColumn(\"shipping_limit_date\", transformDate(\"shipping_limit_date\"))\\\r\n",
+					".join(order_payments_df.select(\"order_id\",\"payment_sequential\",\"payment_installments\",\"payment_value\"), on =\"order_id\",how=\"left\")"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Transform AGG FACT Orders "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"transformDate = udf(lambda z: reformat_date(z))\r\n",
+					"\r\n",
+					"order_items_agg_df = \r\n",
+					"\r\n",
+					"order_df = order_df.select(\"order_id\",\"customer_id\",\"order_approved_at\",\"order_purchase_timestamp\",\"order_delivered_carrier_date\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\",\"delivery_service_id\")\\\r\n",
+					".withColumn(\"order_approved_at\", transformDate(\"order_approved_at\"))\\\r\n",
+					".withColumn(\"order_delivered_carrier_date\", transformDate(\"order_delivered_carrier_date\"))\\\r\n",
+					".withColumn(\"order_delivered_customer_date\", transformDate(\"order_delivered_customer_date\"))\\\r\n",
+					".withColumn(\"order_estimated_delivery_date\", transformDate(\"order_estimated_delivery_date\"))\\\r\n",
+					".withColumn(\"order_purchase_timestamp\", transformDate(\"order_purchase_timestamp\"))\\\r\n",
+					".join(order_payments_df.select(\"order_id\",\"payment_sequential\",\"payment_installments\",\"payment_value\"), on =\"order_id\",how=\"left\")"
 				],
 				"execution_count": null
 			}
