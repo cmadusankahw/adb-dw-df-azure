@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c548f899-987e-48e2-87ae-4e87356e041f"
+				"spark.autotune.trackingId": "a95e6695-01f8-48aa-bdfb-f0c63b6e3ced"
 			}
 		},
 		"metadata": {
@@ -84,12 +84,12 @@
 					"order_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/orders.csv\")\r\n",
 					"order_items_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_items.csv\")\r\n",
 					"order_payments_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
-					"product_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
-					"delivey_service_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
-					"supplier_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/order_payments.csv\")\r\n",
+					"product_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/products.csv\")\r\n",
+					"delivery_service_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/delivery_services.csv\")\r\n",
+					"supplier_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")\r\n",
 					""
 				],
-				"execution_count": 2
+				"execution_count": 29
 			},
 			{
 				"cell_type": "code",
@@ -121,9 +121,27 @@
 					"                .option(\"header\", True)\\\r\n",
 					"                .option(\"inferSchema\", True)\\\r\n",
 					"                .csv(order_payments_raw_path)\r\n",
-					"order_payments_df.createOrReplaceTempView(\"orderpayments\")"
+					"order_payments_df.createOrReplaceTempView(\"orderpayments\")\r\n",
+					"\r\n",
+					"products_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(product_raw_path)\r\n",
+					"products_df.createOrReplaceTempView(\"product\")\r\n",
+					"\r\n",
+					"delivery_services_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(delivery_service_raw_path)\r\n",
+					"delivery_services_df.createOrReplaceTempView(\"deliveryservices\")\r\n",
+					"\r\n",
+					"supplier_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(supplier_raw_path)\r\n",
+					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 9
+				"execution_count": 57
 			},
 			{
 				"cell_type": "code",
@@ -148,7 +166,7 @@
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 18
+				"execution_count": 58
 			},
 			{
 				"cell_type": "markdown",
@@ -187,9 +205,13 @@
 					".withColumn(\"order_estimated_delivery_date\", transformDate(\"order_estimated_delivery_date\"))\\\r\n",
 					".withColumn(\"order_purchase_timestamp\", transformDate(\"order_purchase_timestamp\"))\\\r\n",
 					".withColumn(\"shipping_limit_date\", transformDate(\"shipping_limit_date\"))\\\r\n",
-					".join(order_payments_df.select(\"order_id\",\"payment_sequential\",\"payment_installments\",\"payment_value\"), on =\"order_id\",how=\"left\")"
+					".join(order_payments_df.select(\"order_id\",\"payment_sequential\",\"payment_installments\",\"payment_value\"), on =\"order_id\",how=\"left\")\\\r\n",
+					".join(products_df.select(col(\"product_id\"),col(\"unit_price\").alias(\"product_unit_price\"),col(\"product_quantity_on_hand\"), col(\"product_discount\"), col(\"supplier_id\")), how = \"left\", on=\"product_id\")\\\r\n",
+					".join(delivery_services_df.select(\"delivery_service_id\",\"delivery_service_duration\"), on=\"delivery_service_id\", how=\"left\")\\\r\n",
+					".join(supplier_df.select(\"supplier_id\",\"supplied_quantity_for_month\"), on=\"supplier_id\", how=\"left\")\\\r\n",
+					".drop_duplicates([\"order_id\",\"order_item_id\"])"
 				],
-				"execution_count": 21
+				"execution_count": 59
 			},
 			{
 				"cell_type": "markdown",
@@ -218,9 +240,30 @@
 					}
 				},
 				"source": [
+					"order_items_agg_df = order_items_df.groupBy(\"order_id\")\\\r\n",
+					".agg({\"order_item_id\":\"count\",\"price\":\"sum\",\"freight_value\":\"sum\",\"product_discount\":\"sum\"})\\\r\n",
+					".withColumnRenamed(\"count(order_item_id)\",\"order_items\")\\\r\n",
+					".withColumnRenamed(\"sum(price)\",\"order_total_price\")\\\r\n",
+					".withColumnRenamed(\"sum(freight_value)\",\"order_total_freight_value\")\\\r\n",
+					".withColumnRenamed(\"sum(product_discount)\",\"order_total_discount\")"
+				],
+				"execution_count": 60
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"transformDate = udf(lambda z: reformat_date(z))\r\n",
-					"\r\n",
-					"order_items_agg_df = \r\n",
 					"\r\n",
 					"order_df = order_df.select(\"order_id\",\"customer_id\",\"order_approved_at\",\"order_purchase_timestamp\",\"order_delivered_carrier_date\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\",\"delivery_service_id\")\\\r\n",
 					".withColumn(\"order_approved_at\", transformDate(\"order_approved_at\"))\\\r\n",
@@ -228,9 +271,76 @@
 					".withColumn(\"order_delivered_customer_date\", transformDate(\"order_delivered_customer_date\"))\\\r\n",
 					".withColumn(\"order_estimated_delivery_date\", transformDate(\"order_estimated_delivery_date\"))\\\r\n",
 					".withColumn(\"order_purchase_timestamp\", transformDate(\"order_purchase_timestamp\"))\\\r\n",
-					".join(order_payments_df.select(\"order_id\",\"payment_sequential\",\"payment_installments\",\"payment_value\"), on =\"order_id\",how=\"left\")"
+					".join(order_payments_df.select(\"order_id\",\"payment_sequential\",\"payment_installments\",\"payment_value\"),on=\"order_id\",how=\"left\")\\\r\n",
+					".join(order_items_agg_df,on=\"order_id\",how=\"left\")\\\r\n",
+					".join(delivery_services_df.select(\"delivery_service_id\",\"delivery_service_duration\"),on=\"delivery_service_id\",how=\"left\")\\\r\n",
+					".drop_duplicates([\"order_id\"])"
 				],
-				"execution_count": null
+				"execution_count": 62
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Proceesed FACT tables dumping"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\")\r\n",
+					"\r\n",
+					"order_items_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/fact_order_items.csv\")\r\n",
+					"agg_order_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/fact_agg_order.csv\")\r\n",
+					""
+				],
+				"execution_count": 63
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"order_df.coalesce(1).write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".save(agg_order_processed_path)\r\n",
+					"\r\n",
+					"order_items_df.coalesce(1).write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".save(order_items_processed_path)\r\n",
+					""
+				],
+				"execution_count": 64
 			}
 		]
 	}
