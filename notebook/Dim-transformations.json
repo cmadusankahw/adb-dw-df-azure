@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5970197e-45c1-4dbd-bb2f-7a74e32c9863"
+				"spark.autotune.trackingId": "efda1095-e14f-4fbc-8234-0f8c641b0586"
 			}
 		},
 		"metadata": {
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 16
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 17
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -763,6 +763,7 @@
 					"# sk_generator('review_id','sk_review','orderreviews')\\\r\n",
 					"order_reviews_df = order_reviews_df\\\r\n",
 					".select(\"review_id\",\"order_id\",\"review_score\",\"review_comment_title\",\"review_comment_message\",\"review_creation_date\",\"review_answer_timestamp\")\\\r\n",
+					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))\\\r\n",
 					".withColumn('review_comment_title', cleanDetails(col('review_comment_title')))\\\r\n",
 					".withColumn('review_comment_message', cleanDetails(col('review_comment_message')))"
 				],
