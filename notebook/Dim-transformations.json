@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "25f975ac-a9c6-4e6b-9eb9-f41521fb38d3"
+				"spark.autotune.trackingId": "fbcbd571-0e2b-419a-95da-906f229e91ab"
 			}
 		},
 		"metadata": {
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 2
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 3
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",
@@ -459,7 +459,7 @@
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 4
+				"execution_count": 11
 			},
 			{
 				"cell_type": "markdown",
@@ -573,7 +573,7 @@
 					"supplier_df = supplier_df.drop(\"supplied_quantity_for_month\")\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": 7
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
@@ -751,13 +751,21 @@
 					}
 				},
 				"source": [
+					"def clean_details(col):\r\n",
+					"    try:\r\n",
+					"        return str(col).replace(\",\",\"\")\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
 					"getReviewSentiment = udf(lambda z: get_review_sentiment(z))\r\n",
+					"cleanDetails = udf(lambda z: clean_details(z))\r\n",
 					"\r\n",
 					"# sk_generator('review_id','sk_review','orderreviews')\\\r\n",
 					"order_reviews_df = order_reviews_df\\\r\n",
-					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))"
+					".withColumn('review_comment_title', cleanDetails(col('review_comment_title')))\\\r\n",
+					".withColumn('review_comment_message', cleanDetails(col('review_comment_message')))"
 				],
-				"execution_count": 11
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
