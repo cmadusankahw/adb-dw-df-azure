@@ -118,6 +118,37 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Load DimProduct",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load DimSupplier",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "ProductSCDFlow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"folder": {
