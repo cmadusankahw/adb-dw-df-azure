@@ -16,7 +16,38 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "FACTOrderItemsFlow",
+						"referenceName": "DF-FACTOrderItems",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Load AGG FACT Order",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load FACTOrderItems",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF-FACTOrderItems",
 						"type": "DataFlowReference"
 					},
 					"compute": {
