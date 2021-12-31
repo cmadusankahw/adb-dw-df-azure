@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "18e44456-26b4-40af-b476-b5e0c012f70d"
+				"spark.autotune.trackingId": "9a0ce63f-dac1-4643-945f-3cb0cd837e90"
 			}
 		},
 		"metadata": {
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 2
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -459,7 +459,7 @@
 					"    except:\r\n",
 					"        pass"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -507,7 +507,7 @@
 					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
 					".drop('phone_no')"
 				],
-				"execution_count": 5
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -540,7 +540,7 @@
 					"\r\n",
 					"# delivery_service_duration"
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -573,7 +573,7 @@
 					"\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -620,7 +620,7 @@
 					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")\\\r\n",
 					".withColumn('seller_size', getSellerSize(col('no_of_products_sold')))"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -653,7 +653,7 @@
 					".withColumnRenamed('geolocation_lat','geolocation_lattitude')\\\r\n",
 					".withColumnRenamed('geolocation_lng','geolocation_longtitude')"
 				],
-				"execution_count": 9
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -722,7 +722,7 @@
 					"\r\n",
 					"# Format dates to remove .00000 part in FACT"
 				],
-				"execution_count": 10
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -757,7 +757,7 @@
 					"order_reviews_df = order_reviews_df\\\r\n",
 					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))"
 				],
-				"execution_count": 11
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -800,7 +800,7 @@
 					"# product_quantity_on_hand\r\n",
 					"# product_discount"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -862,7 +862,7 @@
 					".withColumn(\"is_holiday\",getHoliday(\"date\"))\\\r\n",
 					".drop(\"sk_date\") # dropping temp SK"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -903,7 +903,7 @@
 					"geolocation_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_geolocation.csv\")\r\n",
 					"date_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_date.csv\")"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -919,55 +919,55 @@
 					}
 				},
 				"source": [
-					"customer_df.write\\\r\n",
+					"customer_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(customer_processed_path)\r\n",
 					"\r\n",
-					"delivery_services_df.write\\\r\n",
+					"delivery_services_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(delivery_services_processed_path)\r\n",
 					"\r\n",
-					"supplier_df.write\\\r\n",
+					"supplier_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(supplier_processed_path)\r\n",
 					"\r\n",
-					"seller_df.write\\\r\n",
+					"seller_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(seller_processed_path)\r\n",
 					"\r\n",
-					"order_details_df.write\\\r\n",
+					"order_details_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(order_details_processed_path)\r\n",
 					"\r\n",
-					"order_reviews_df.write\\\r\n",
+					"order_reviews_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(order_review_processed_path)\r\n",
 					"\r\n",
-					"products_df.write\\\r\n",
+					"products_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(product_processed_path)\r\n",
 					"\r\n",
-					"geolocation_df.write\\\r\n",
+					"geolocation_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(geolocation_processed_path)\r\n",
 					"\r\n",
-					"dim_date_df.write\\\r\n",
+					"dim_date_df.coalesce(1).write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
