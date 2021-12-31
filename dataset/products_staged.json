@@ -19,6 +19,67 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "product_id",
+				"type": "String"
+			},
+			{
+				"name": "product_category_name",
+				"type": "String"
+			},
+			{
+				"name": "product_name_lenght",
+				"type": "String"
+			},
+			{
+				"name": "product_description_lenght",
+				"type": "String"
+			},
+			{
+				"name": "product_photos_qty",
+				"type": "String"
+			},
+			{
+				"name": "product_weight_g",
+				"type": "String"
+			},
+			{
+				"name": "product_length_cm",
+				"type": "String"
+			},
+			{
+				"name": "product_height_cm",
+				"type": "String"
+			},
+			{
+				"name": "product_width_cm",
+				"type": "String"
+			},
+			{
+				"name": "product_description",
+				"type": "String"
+			},
+			{
+				"name": "unit_price",
+				"type": "String"
+			},
+			{
+				"name": "product_quantity_on_hand",
+				"type": "String"
+			},
+			{
+				"name": "product_discount",
+				"type": "String"
+			},
+			{
+				"name": "product_brand",
+				"type": "String"
+			},
+			{
+				"name": "supplier_id",
+				"type": "String"
+			}
+		]
 	}
 }
