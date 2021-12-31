@@ -1,0 +1,117 @@
+{
+	"name": "FACT_Agg_Order",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adb-dw-dm-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "fact_agg_order.csv",
+				"folderPath": "data/curated/fact_agg_order.csv",
+				"fileSystem": "chiransubfs"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "supplier_id",
+				"type": "String"
+			},
+			{
+				"name": "delivery_service_id",
+				"type": "String"
+			},
+			{
+				"name": "product_id",
+				"type": "String"
+			},
+			{
+				"name": "order_id",
+				"type": "String"
+			},
+			{
+				"name": "order_item_id",
+				"type": "String"
+			},
+			{
+				"name": "seller_id",
+				"type": "String"
+			},
+			{
+				"name": "shipping_limit_date",
+				"type": "String"
+			},
+			{
+				"name": "price",
+				"type": "String"
+			},
+			{
+				"name": "freight_value",
+				"type": "String"
+			},
+			{
+				"name": "customer_id",
+				"type": "String"
+			},
+			{
+				"name": "order_approved_at",
+				"type": "String"
+			},
+			{
+				"name": "order_purchase_timestamp",
+				"type": "String"
+			},
+			{
+				"name": "order_delivered_carrier_date",
+				"type": "String"
+			},
+			{
+				"name": "order_delivered_customer_date",
+				"type": "String"
+			},
+			{
+				"name": "order_estimated_delivery_date",
+				"type": "String"
+			},
+			{
+				"name": "payment_sequential",
+				"type": "String"
+			},
+			{
+				"name": "payment_installments",
+				"type": "String"
+			},
+			{
+				"name": "payment_value",
+				"type": "String"
+			},
+			{
+				"name": "product_unit_price",
+				"type": "String"
+			},
+			{
+				"name": "product_quantity_on_hand",
+				"type": "String"
+			},
+			{
+				"name": "product_discount",
+				"type": "String"
+			},
+			{
+				"name": "delivery_service_duration",
+				"type": "String"
+			},
+			{
+				"name": "supplied_quantity_for_month",
+				"type": "String"
+			}
+		]
+	}
+}
