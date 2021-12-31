@@ -19,6 +19,35 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "supplier_id",
+				"type": "String"
+			},
+			{
+				"name": "supplier_comapny",
+				"type": "String"
+			},
+			{
+				"name": "supplier_city",
+				"type": "String"
+			},
+			{
+				"name": "supplier_state",
+				"type": "String"
+			},
+			{
+				"name": "supplier_zip_code_prefix",
+				"type": "String"
+			},
+			{
+				"name": "supplied_quantity_for_month",
+				"type": "String"
+			},
+			{
+				"name": "supplier_reg_date",
+				"type": "String"
+			}
+		]
 	}
 }
