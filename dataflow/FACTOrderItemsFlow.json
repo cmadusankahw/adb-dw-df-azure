@@ -1,6 +1,9 @@
 {
 	"name": "FACTOrderItemsFlow",
 	"properties": {
+		"folder": {
+			"name": "version-history"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
