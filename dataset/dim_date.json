@@ -1,0 +1,72 @@
+{
+	"name": "dim_date",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adb-dw-dm-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "dim_date.csv",
+					"type": "Expression"
+				},
+				"folderPath": "data/curated/dim_date.csv",
+				"fileSystem": "chiransubfs"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "date",
+				"type": "String"
+			},
+			{
+				"name": "year",
+				"type": "String"
+			},
+			{
+				"name": "month",
+				"type": "String"
+			},
+			{
+				"name": "quarter",
+				"type": "String"
+			},
+			{
+				"name": "day_of_month",
+				"type": "String"
+			},
+			{
+				"name": "day_of_week",
+				"type": "String"
+			},
+			{
+				"name": "week_of_year",
+				"type": "String"
+			},
+			{
+				"name": "is_leap_year",
+				"type": "String"
+			},
+			{
+				"name": "is_weekend",
+				"type": "String"
+			},
+			{
+				"name": "day_prefix",
+				"type": "String"
+			},
+			{
+				"name": "is_holiday",
+				"type": "String"
+			}
+		]
+	}
+}
