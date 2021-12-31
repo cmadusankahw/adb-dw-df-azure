@@ -29,7 +29,14 @@
 			{
 				"name": "Load DimDeliveryService",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Load DimCustomer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "1.00:00:00",
 					"retry": 0,
@@ -41,6 +48,37 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DeliveryServiceSCDFlow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Load DimSeller",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load DimDeliveryService",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "SellerSCDFlow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
