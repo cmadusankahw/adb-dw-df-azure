@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "92a5dbc2-7e59-4202-a89e-747741c56746"
+				"spark.autotune.trackingId": "3efcb564-f0c1-4203-9f1a-2bd4b34869ca"
 			}
 		},
 		"metadata": {
@@ -496,7 +496,8 @@
 					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())\r\n",
 					"getPhoneOperator = udf(lambda z: getsubstring(z,0,3))\r\n",
 					"\r\n",
-					"customer_df = sk_generator('customer_id','sk_customer','customer')\\\r\n",
+					" #sk_generator('customer_id','sk_customer','customer')\\\r\n",
+					"customer_df = customer_df\\\r\n",
 					".withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
 					".withColumn( 'birth_month', getBirthMonth('birth_date'))\\\r\n",
 					".withColumn( 'age', getAge('birth_date'))\\\r\n",
@@ -535,7 +536,7 @@
 					}
 				},
 				"source": [
-					"delivery_services_df = sk_generator('delivery_service_id','sk_delivery_service','deliveryservices')\r\n",
+					"# delivery_services_df = sk_generator('delivery_service_id','sk_delivery_service','deliveryservices')\r\n",
 					"\r\n",
 					"# delivery_service_duration"
 				],
@@ -568,7 +569,7 @@
 					}
 				},
 				"source": [
-					"supplier_df = sk_generator('supplier_id','sk_supplier','supplier')\r\n",
+					"# supplier_df = sk_generator('supplier_id','sk_supplier','supplier')\r\n",
 					"\r\n",
 					"# supplied_quantity_for_month"
 				],
@@ -613,7 +614,8 @@
 					".withColumnRenamed('collect_list(product_category_name)','product_categories_sold')\\\r\n",
 					".withColumn('product_categories_sold', getUniqueProductCat(col('product_categories_sold')))\r\n",
 					"\r\n",
-					"seller_df = sk_generator('seller_id','sk_seller','seller')\\\r\n",
+					"# sk_generator('seller_id','sk_seller','seller')\\\r\n",
+					"seller_df = seller_df\\\r\n",
 					".join(seller_product_df, how = \"left\", on=\"seller_id\")\\\r\n",
 					".join(seller_product_cat_df, how = \"left\", on=\"seller_id\")\\\r\n",
 					".withColumn('seller_size', getSellerSize(col('no_of_products_sold')))"
@@ -687,10 +689,11 @@
 					".join(products_df.select(\"product_id\",\"product_discount\"), how = \"left\", on =\"product_id\")\\\r\n",
 					".groupBy(\"order_id\").agg({\"product_discount\":\"sum\"})\r\n",
 					"\r\n",
-					"order_df.select(\"order_id\",\"order_status\",\"delivery_service_id\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\")\\\r\n",
-					".createOrReplaceTempView(\"orderdetails\")\r\n",
+					"# order_df.select(\"order_id\",\"order_status\",\"delivery_service_id\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\")\\\r\n",
+					"# .createOrReplaceTempView(\"orderdetails\")\r\n",
+					"#  sk_generator('order_id','sk_order_details','orderdetails')\\\r\n",
 					"\r\n",
-					"order_details_df = sk_generator('order_id','sk_order_details','orderdetails')\\\r\n",
+					"order_details_df = order_df.select(\"order_id\",\"order_status\",\"delivery_service_id\",\"order_delivered_customer_date\",\"order_estimated_delivery_date\")\\\r\n",
 					".join(order_payments_df.select(col(\"order_id\"), col(\"payment_type\")).distinct(), how=\"left\", on = \"order_id\")\\\r\n",
 					".join(order_discount_df, how=\"left\", on = \"order_id\")\\\r\n",
 					".withColumn(\"is_returned\",lit(\"NO\"))\\\r\n",
@@ -750,7 +753,8 @@
 				"source": [
 					"getReviewSentiment = udf(lambda z: get_review_sentiment(z))\r\n",
 					"\r\n",
-					"order_reviews_df = sk_generator('review_id','sk_review','orderreviews')\\\r\n",
+					"# sk_generator('review_id','sk_review','orderreviews')\\\r\n",
+					"order_reviews_df = order_reviews_df\\\r\n",
 					".withColumn('review_sentiment', getReviewSentiment(col('review_score')))"
 				],
 				"execution_count": 11
@@ -785,17 +789,16 @@
 					"getProductVolume = udf(lambda z: get_product_volume(z))\r\n",
 					"getPackageType = udf(lambda z: get_package_type(z))\r\n",
 					"\r\n",
-					"products_df = sk_generator('product_id','sk_product','product')\\\r\n",
+					"# sk_generator('product_id','sk_product','product')\\\r\n",
+					"products_df = products_df\\\r\n",
 					".withColumn('product_volume', getProductVolume(array('product_length_cm','product_height_cm','product_width_cm')))\\\r\n",
 					".withColumn('package_type', getPackageType(array('product_volume','product_weight_g')))\\\r\n",
-					".withColumnRenamed('product_photos_qty','product_photos_quantity')\r\n",
+					".withColumnRenamed('product_photos_qty','product_photos_quantity')\\\r\n",
+					".drop('supplier_id')\r\n",
 					"\r\n",
 					"# unit_price\r\n",
 					"# product_quantity_on_hand\r\n",
-					"# product_discount\r\n",
-					"\r\n",
-					"# to drop\r\n",
-					"# supplier_id"
+					"# product_discount"
 				],
 				"execution_count": 12
 			},
@@ -856,7 +859,8 @@
 					".withColumn(\"is_leap_year\",getLeapYear(\"date\"))\\\r\n",
 					".withColumn(\"is_weekend\",getWeekend(\"day_of_week\"))\\\r\n",
 					".withColumn(\"day_prefix\",getDayPrefix(\"day_of_week\"))\\\r\n",
-					".withColumn(\"is_holiday\",getHoliday(\"date\"))"
+					".withColumn(\"is_holiday\",getHoliday(\"date\"))\\\r\n",
+					".drop(\"sk_date\") # dropping temp SK"
 				],
 				"execution_count": 27
 			},
