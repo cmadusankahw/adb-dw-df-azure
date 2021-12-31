@@ -1,6 +1,9 @@
 {
 	"name": "UpdateCustomerSCDT1",
 	"properties": {
+		"folder": {
+			"name": "version-history"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
