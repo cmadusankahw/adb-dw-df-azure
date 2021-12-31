@@ -1,0 +1,111 @@
+{
+	"name": "DimSeller",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSQLDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "sk_customer",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customer_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "customer_unique_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "customer_zip_code_prefix",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customer_city",
+				"type": "nvarchar"
+			},
+			{
+				"name": "customer_state",
+				"type": "nvarchar"
+			},
+			{
+				"name": "birth_date",
+				"type": "nvarchar"
+			},
+			{
+				"name": "birth_year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "birth_month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "generation",
+				"type": "nvarchar"
+			},
+			{
+				"name": "age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "age_category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "gender",
+				"type": "nvarchar"
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "marital_status",
+				"type": "nvarchar"
+			},
+			{
+				"name": "income",
+				"type": "nvarchar"
+			},
+			{
+				"name": "social_state",
+				"type": "nvarchar"
+			},
+			{
+				"name": "employement_status",
+				"type": "nvarchar"
+			},
+			{
+				"name": "job_role",
+				"type": "nvarchar"
+			},
+			{
+				"name": "phone_operator",
+				"type": "nvarchar"
+			},
+			{
+				"name": "scd_created_at",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "scd_is_current",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimSeller"
+		}
+	}
+}
