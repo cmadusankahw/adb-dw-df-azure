@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "fact_order_items.csv",
-				"folderPath": "data/curated",
+				"folderPath": "data/curated/fact_order_items.csv",
 				"fileSystem": "chiransubfs"
 			},
 			"columnDelimiter": ",",
