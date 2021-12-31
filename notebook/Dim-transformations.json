@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fbcbd571-0e2b-419a-95da-906f229e91ab"
+				"spark.autotune.trackingId": "5970197e-45c1-4dbd-bb2f-7a74e32c9863"
 			}
 		},
 		"metadata": {
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 9
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"                .csv(suppliers_raw_path)\r\n",
 					"supplier_df.createOrReplaceTempView(\"supplier\")"
 				],
-				"execution_count": 13
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",
@@ -573,7 +573,7 @@
 					"supplier_df = supplier_df.drop(\"supplied_quantity_for_month\")\r\n",
 					"# supplied_quantity_for_month"
 				],
-				"execution_count": 5
+				"execution_count": 25
 			},
 			{
 				"cell_type": "markdown",
@@ -762,10 +762,11 @@
 					"\r\n",
 					"# sk_generator('review_id','sk_review','orderreviews')\\\r\n",
 					"order_reviews_df = order_reviews_df\\\r\n",
+					".select(\"review_id\",\"order_id\",\"review_score\",\"review_comment_title\",\"review_comment_message\",\"review_creation_date\",\"review_answer_timestamp\")\\\r\n",
 					".withColumn('review_comment_title', cleanDetails(col('review_comment_title')))\\\r\n",
 					".withColumn('review_comment_message', cleanDetails(col('review_comment_message')))"
 				],
-				"execution_count": 14
+				"execution_count": 22
 			},
 			{
 				"cell_type": "markdown",
@@ -911,7 +912,7 @@
 					"geolocation_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_geolocation.csv\")\r\n",
 					"date_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_date.csv\")"
 				],
-				"execution_count": 14
+				"execution_count": 26
 			},
 			{
 				"cell_type": "code",
