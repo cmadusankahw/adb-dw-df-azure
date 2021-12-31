@@ -1,5 +1,5 @@
 {
-	"name": "All-ADL-DW-Loading",
+	"name": "All-ADL-DW-Dim-Loading",
 	"properties": {
 		"activities": [
 			{
@@ -180,6 +180,340 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Load DimOrderreview",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Load DimOrderDetail",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "OrderReviewSCDFlow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Load DimDate",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "date",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "year",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "year",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "quarter",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "quarter",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "month",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "month",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "week_of_year",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "week_of_year",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "day_of_month",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "day_of_month",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "day_of_week",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "day_of_week",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "day_prefix",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "day_prefix",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "is_weekend",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "is_weekend",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "is_holiday",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "is_holiday",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "is_leap_year",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "is_leap_year",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dim_date",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DimDate",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Load DimGeoLocation",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Load DimDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "geolocation_zip_code_prefix",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "geolocation_zip_code_prefix",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "geolocation_lattitude",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "geolocation_lattitude",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "geolocation_longtitude",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "geolocation_longtitude",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "geolocation_city",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "geolocation_city",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "geolocation_state",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "geolocation_state",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dim_geolocation",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DimGeoLocation",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"folder": {
