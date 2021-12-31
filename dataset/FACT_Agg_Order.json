@@ -21,39 +21,11 @@
 		},
 		"schema": [
 			{
-				"name": "supplier_id",
-				"type": "String"
-			},
-			{
 				"name": "delivery_service_id",
 				"type": "String"
 			},
 			{
-				"name": "product_id",
-				"type": "String"
-			},
-			{
 				"name": "order_id",
-				"type": "String"
-			},
-			{
-				"name": "order_item_id",
-				"type": "String"
-			},
-			{
-				"name": "seller_id",
-				"type": "String"
-			},
-			{
-				"name": "shipping_limit_date",
-				"type": "String"
-			},
-			{
-				"name": "price",
-				"type": "String"
-			},
-			{
-				"name": "freight_value",
 				"type": "String"
 			},
 			{
@@ -93,23 +65,23 @@
 				"type": "String"
 			},
 			{
-				"name": "product_unit_price",
+				"name": "order_items",
 				"type": "String"
 			},
 			{
-				"name": "product_quantity_on_hand",
+				"name": "order_total_discount",
 				"type": "String"
 			},
 			{
-				"name": "product_discount",
+				"name": "order_total_price",
+				"type": "String"
+			},
+			{
+				"name": "order_total_freight_value",
 				"type": "String"
 			},
 			{
 				"name": "delivery_service_duration",
-				"type": "String"
-			},
-			{
-				"name": "supplied_quantity_for_month",
 				"type": "String"
 			}
 		]
