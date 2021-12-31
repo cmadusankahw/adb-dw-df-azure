@@ -1,0 +1,64 @@
+{
+	"name": "ProductSCDFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dim_product",
+						"type": "DatasetReference"
+					},
+					"name": "ProductSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimProduct",
+						"type": "DatasetReference"
+					},
+					"name": "DimProduct"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimProduct",
+						"type": "DatasetReference"
+					},
+					"name": "sinkAllatFirst"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimProduct",
+						"type": "DatasetReference"
+					},
+					"name": "sinkwithUpdatingSCD"
+				}
+			],
+			"transformations": [
+				{
+					"name": "addingSCDIsCurrent"
+				},
+				{
+					"name": "renameOLTPColumns"
+				},
+				{
+					"name": "LookupForExistingRows"
+				},
+				{
+					"name": "FilterExistingRows"
+				},
+				{
+					"name": "SetIsCurrentToNo"
+				},
+				{
+					"name": "AlterRows"
+				},
+				{
+					"name": "SelectRequiredRows"
+				}
+			],
+			"script": "source(output(\n\t\tproduct_id as string,\n\t\tproduct_category_name as string,\n\t\tproduct_name_lenght as integer,\n\t\tproduct_description_lenght as integer,\n\t\tproduct_photos_quantity as integer,\n\t\tproduct_weight_g as integer,\n\t\tproduct_length_cm as integer,\n\t\tproduct_height_cm as integer,\n\t\tproduct_width_cm as integer,\n\t\tproduct_description as string,\n\t\tunit_price as double,\n\t\tproduct_quantity_on_hand as integer,\n\t\tproduct_discount as double,\n\t\tproduct_brand as string,\n\t\tproduct_volume as double,\n\t\tpackage_type as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> ProductSource\nsource(output(\n\t\tsk_product as integer,\n\t\tproduct_id as string,\n\t\tproduct_brand as string,\n\t\tproduct_category_name as string,\n\t\tproduct_weight_g as double,\n\t\tproduct_length_cm as double,\n\t\tproduct_height_cm as double,\n\t\tproduct_width_cm as double,\n\t\tproduct_volume as double,\n\t\tpackage_type as string,\n\t\tproduct_description as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string,\n\t\tproduct_photos_quantity as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimProduct\nProductSource derive(scd_is_current = \"YES\",\n\t\tscd_created_at = currentTimestamp()) ~> addingSCDIsCurrent\nDimProduct select(mapColumn(\n\t\tDIM_sk_product = sk_product,\n\t\tDIM_product_id = product_id,\n\t\tDIM_product_brand = product_brand,\n\t\tDIM_product_category_name = product_category_name,\n\t\tDIM_product_weight_g = product_weight_g,\n\t\tDIM_product_length_cm = product_length_cm,\n\t\tDIM_product_height_cm = product_height_cm,\n\t\tDIM_product_width_cm = product_width_cm,\n\t\tDIM_product_volume = product_volume,\n\t\tDIM_package_type = package_type,\n\t\tDIM_product_description = product_description,\n\t\tDIM_scd_created_at = scd_created_at,\n\t\tDIM_scd_is_current = scd_is_current,\n\t\tDIM_product_photos_quantity = product_photos_quantity\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> renameOLTPColumns\nProductSource, renameOLTPColumns lookup(product_id == DIM_product_id,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupForExistingRows\nLookupForExistingRows filter(!isNull(DIM_product_id)) ~> FilterExistingRows\nSelectRequiredRows derive(scd_is_current = \"NO\") ~> SetIsCurrentToNo\nSetIsCurrentToNo alterRow(updateIf(1==1)) ~> AlterRows\nFilterExistingRows select(mapColumn(\n\t\tsk_product = DIM_sk_product,\n\t\tproduct_id = DIM_product_id,\n\t\tproduct_brand = DIM_product_brand,\n\t\tproduct_category_name = DIM_product_category_name,\n\t\tproduct_weight_g = DIM_product_weight_g,\n\t\tproduct_length_cm = DIM_product_length_cm,\n\t\tproduct_height_cm = DIM_product_height_cm,\n\t\tproduct_width_cm = DIM_product_width_cm,\n\t\tproduct_volume = DIM_product_volume,\n\t\tpackage_type = DIM_package_type,\n\t\tproduct_description = DIM_product_description,\n\t\tscd_created_at = DIM_scd_created_at,\n\t\tscd_is_current = DIM_scd_is_current,\n\t\tproduct_photos_quantity = DIM_product_photos_quantity\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\naddingSCDIsCurrent sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_product as integer,\n\t\tproduct_id as string,\n\t\tproduct_brand as string,\n\t\tproduct_category_name as string,\n\t\tproduct_weight_g as double,\n\t\tproduct_length_cm as double,\n\t\tproduct_height_cm as double,\n\t\tproduct_width_cm as double,\n\t\tproduct_volume as double,\n\t\tpackage_type as string,\n\t\tproduct_description as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string,\n\t\tproduct_photos_quantity as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tproduct_id,\n\t\tproduct_brand,\n\t\tproduct_category_name,\n\t\tproduct_weight_g,\n\t\tproduct_length_cm,\n\t\tproduct_height_cm,\n\t\tproduct_width_cm,\n\t\tproduct_volume,\n\t\tpackage_type,\n\t\tproduct_description,\n\t\tscd_created_at,\n\t\tscd_is_current,\n\t\tproduct_photos_quantity\n\t)) ~> sinkAllatFirst\nAlterRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_product as integer,\n\t\tproduct_id as string,\n\t\tproduct_brand as string,\n\t\tproduct_category_name as string,\n\t\tproduct_weight_g as double,\n\t\tproduct_length_cm as double,\n\t\tproduct_height_cm as double,\n\t\tproduct_width_cm as double,\n\t\tproduct_volume as double,\n\t\tpackage_type as string,\n\t\tproduct_description as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string,\n\t\tproduct_photos_quantity as integer\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['sk_product'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tsk_product,\n\t\tproduct_id,\n\t\tproduct_brand,\n\t\tproduct_category_name,\n\t\tproduct_weight_g,\n\t\tproduct_length_cm,\n\t\tproduct_height_cm,\n\t\tproduct_width_cm,\n\t\tproduct_volume,\n\t\tpackage_type,\n\t\tproduct_description,\n\t\tscd_created_at,\n\t\tscd_is_current,\n\t\tproduct_photos_quantity\n\t)) ~> sinkwithUpdatingSCD"
+		}
+	}
+}
