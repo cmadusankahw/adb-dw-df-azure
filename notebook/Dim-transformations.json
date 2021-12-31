@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bf090cd8-7f15-49d5-8fb3-5f93f329dd68"
+				"spark.autotune.trackingId": "25f975ac-a9c6-4e6b-9eb9-f41521fb38d3"
 			}
 		},
 		"metadata": {
@@ -570,7 +570,7 @@
 				},
 				"source": [
 					"# supplier_df = sk_generator('supplier_id','sk_supplier','supplier')\r\n",
-					"\r\n",
+					"supplier_df = supplier_df.drop(\"supplied_quantity_for_month\")\r\n",
 					"# supplied_quantity_for_month"
 				],
 				"execution_count": 7
