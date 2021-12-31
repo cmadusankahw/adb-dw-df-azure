@@ -1,0 +1,48 @@
+{
+	"name": "FACTOrderItemsFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DimCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "DimCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "order_items_staged",
+						"type": "DatasetReference"
+					},
+					"name": "orderItemsDL"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimDeliveryService",
+						"type": "DatasetReference"
+					},
+					"name": "DimDeliveryService"
+				},
+				{
+					"dataset": {
+						"referenceName": "order_payments_staged",
+						"type": "DatasetReference"
+					},
+					"name": "orderpaymentsDL"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "AddTempSCD"
+				},
+				{
+					"name": "SelectFactColumns"
+				}
+			],
+			"script": "source(output(\n\t\tsk_customer as integer,\n\t\tcustomer_id as string,\n\t\tcustomer_unique_id as string,\n\t\tcustomer_zip_code_prefix as integer,\n\t\tcustomer_city as string,\n\t\tcustomer_state as string,\n\t\tbirth_date as string,\n\t\tbirth_year as integer,\n\t\tbirth_month as integer,\n\t\tgeneration as string,\n\t\tage as integer,\n\t\tage_category as string,\n\t\tgender as string,\n\t\tname as string,\n\t\tmarital_status as string,\n\t\tincome as string,\n\t\tsocial_state as string,\n\t\temployement_status as string,\n\t\tjob_role as string,\n\t\tphone_operator as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimCustomer\nsource(output(\n\t\torder_id as string,\n\t\torder_item_id as string,\n\t\tproduct_id as string,\n\t\tseller_id as string,\n\t\tshipping_limit_date as string,\n\t\tprice as string,\n\t\tfreight_value as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> orderItemsDL\nsource(output(\n\t\tsk_delivery_service as integer,\n\t\tdelivery_service_id as string,\n\t\tdelivery_service_name as string,\n\t\tdelivery_service_city as string,\n\t\tdelivery_service_state as string,\n\t\tdelivery_service_zip_code_prefix as integer,\n\t\tdelivery_service_reg_date as timestamp,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimDeliveryService\nsource(output(\n\t\torder_id as string,\n\t\tpayment_sequential as string,\n\t\tpayment_type as string,\n\t\tpayment_installments as string,\n\t\tpayment_value as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> orderpaymentsDL\norderItemsDL derive(scd_is_current = \"YES\") ~> AddTempSCD\norderpaymentsDL select(mapColumn(\n\t\torder_id,\n\t\tpayment_sequential,\n\t\tpayment_installments,\n\t\tpayment_value\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectFactColumns"
+		}
+	}
+}
