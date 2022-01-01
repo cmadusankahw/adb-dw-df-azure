@@ -36,14 +36,6 @@
 				"type": "String"
 			},
 			{
-				"name": "review_comment_title",
-				"type": "String"
-			},
-			{
-				"name": "review_comment_message",
-				"type": "String"
-			},
-			{
 				"name": "review_creation_date",
 				"type": "String"
 			},
