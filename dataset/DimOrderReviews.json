@@ -27,14 +27,6 @@
 				"precision": 3
 			},
 			{
-				"name": "review_comment_title",
-				"type": "nvarchar"
-			},
-			{
-				"name": "review_comment_message",
-				"type": "nvarchar"
-			},
-			{
 				"name": "review_creation_date",
 				"type": "datetime2",
 				"scale": 7
