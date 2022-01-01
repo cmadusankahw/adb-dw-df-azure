@@ -1,0 +1,57 @@
+{
+	"name": "DateDimFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dim_date",
+						"type": "DatasetReference"
+					},
+					"name": "DateDimSource"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "DayOfYear"
+				},
+				{
+					"name": "UTCColomboDate"
+				},
+				{
+					"name": "lastDayOfMonth"
+				},
+				{
+					"name": "ConvertToTimeStamp"
+				},
+				{
+					"name": "Year"
+				},
+				{
+					"name": "SelectColumns"
+				},
+				{
+					"name": "month"
+				},
+				{
+					"name": "dayOfMonth"
+				},
+				{
+					"name": "DayOfWeek"
+				},
+				{
+					"name": "IsLeapYear"
+				},
+				{
+					"name": "IsHoliday"
+				},
+				{
+					"name": "IsWeekEnd"
+				}
+			],
+			"script": "source(output(\n\t\tdate as date,\n\t\tyear as integer,\n\t\tmonth as integer,\n\t\tquarter as integer,\n\t\tday_of_month as integer,\n\t\tday_of_week as integer,\n\t\tweek_of_year as integer,\n\t\tis_leap_year as string,\n\t\tis_weekend as string,\n\t\tday_prefix as string,\n\t\tis_holiday as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DateDimSource\nDateDimSource derive(day_of_year = dayOfYear(date)) ~> DayOfYear\nConvertToTimeStamp derive(asia_colombo_UTC = fromUTC(date,'Asia/Colombo')) ~> UTCColomboDate\nUTCColomboDate derive(last_day_of_month = lastDayOfMonth(date)) ~> lastDayOfMonth\nDayOfYear derive(date = toTimestamp(date)) ~> ConvertToTimeStamp\nSelectColumns derive(year = year(date)) ~> Year\nDateDimSource select(mapColumn(\n\t\tdate,\n\t\tquarter,\n\t\tis_leap_year,\n\t\tis_weekend,\n\t\tday_prefix,\n\t\tis_holiday\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectColumns\nYear derive(month = month(date)) ~> month\nmonth derive(day_of_month = dayOfMonth(date)) ~> dayOfMonth\ndayOfMonth derive(day_of_week = dayOfWeek(date)) ~> DayOfWeek\nDateDimSource derive(is_leap_year = 'NO') ~> IsLeapYear\nIsLeapYear derive(is_holiday = \"NO\") ~> IsHoliday\nIsHoliday derive(is_weekend = iif(day_of_week > 4, \"YES\", \"NO\")) ~> IsWeekEnd"
+		}
+	}
+}
