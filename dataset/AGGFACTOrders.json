@@ -1,0 +1,111 @@
+{
+	"name": "AGGFACTOrders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSQLDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "order_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "sk_order_details",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sk_customer",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sk_review",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sk_delivery_service",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sk_date",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "order_items",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "order_total_price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "order_total_freight_value",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "order_total_discount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "payment_sequential",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "payment_installments",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "payment_value",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "delivery_service_duration",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "order_purchase_timestamp",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "order_approved_at",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "order_delivered_carrier_date",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "order_delivered_customer_date",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "order_estimated_delivery_date",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AGGFACTOrder"
+		}
+	}
+}
