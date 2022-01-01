@@ -47,7 +47,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF-FACTOrderItems",
+						"referenceName": "DF-FACTAGGOrder",
 						"type": "DataFlowReference"
 					},
 					"compute": {
