@@ -1,0 +1,64 @@
+{
+	"name": "DW-Load-All",
+	"properties": {
+		"activities": [
+			{
+				"name": "All Transformations",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "All-FACT-Dim-Transformations",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Dim Loading",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "All Transformations",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "All-ADL-DW-Dim-Loading",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "FACT Loading",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Dim Loading",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "All-ADL-DW-FACT_Loading",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "ADL-to-DW-Loading"
+		},
+		"annotations": []
+	}
+}
