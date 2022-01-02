@@ -1,0 +1,17 @@
+{
+	"name": "Dim Product",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [dbo].[DimProduct]    Script Date: 12/28/2021******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimProduct]') AND type in (N'U'))\nDROP TABLE [dbo].[DimProduct]\nGO\n\n\nCREATE TABLE [dbo].[DimProduct](\n\t[sk_product] [int] IDENTITY(1,1),\n\t[product_id] [nvarchar](50) NOT NULL,\n\t[product_brand] [nvarchar](50) NULL,\n\t[product_category_name] [nvarchar](50) NULL,\n\t[product_weight_g] [float] NULL,\n\t[product_length_cm] [float] NULL,\n\t[product_height_cm] [float] NULL,\n\t[product_width_cm] [float] NULL,\n\t[product_volume] [float] NULL,\n\t[package_type] [nvarchar](50) NULL,\n\t[product_description] [nvarchar](50) NULL,\n\t[product_photos_quantity] [int] NULL,\n\t[scd_created_at] [datetime2](7) DEFAULT GETDATE(),\n\t[scd_is_current] [nvarchar](50) DEFAULT 'YES',\n CONSTRAINT [PK_DimProduct] PRIMARY KEY CLUSTERED \n(\n\t[sk_product] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

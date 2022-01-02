@@ -1,0 +1,17 @@
+{
+	"name": "DimOrderDetails",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [dbo].[DimOrderDetails]    Script Date: 12/28/2021******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimOrderDetails]') AND type in (N'U'))\nDROP TABLE [dbo].[DimOrderDetails]\nGO\n\nCREATE TABLE [dbo].[DimOrderDetails](\n\t[sk_order_details] [int] IDENTITY(1,1),\n\t[order_id] [nvarchar](50) NOT NULL,\n\t[payment_type] [nvarchar](50) NULL,\n\t[order_status] [nvarchar](50) NULL,\n\t[is_delivery_delayed] [nvarchar](50) NULL,\n\t[has_discount] [nvarchar](50) NULL,\n\t[is_returned] [nvarchar](50) NULL,\n\t[scd_created_at] [datetime2](7) DEFAULT GETDATE(),\n\t[scd_is_current] [nvarchar](50) DEFAULT 'YES',\n CONSTRAINT [PK_DimOrderDetails] PRIMARY KEY CLUSTERED \n(\n\t[sk_order_details] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
