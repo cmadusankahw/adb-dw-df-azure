@@ -1,0 +1,17 @@
+{
+	"name": "NYC Taxi Data",
+	"properties": {
+		"content": {
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://contosolake.dfs.core.windows.net/users/NYCTripSmall.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "serverless-sql-db",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
