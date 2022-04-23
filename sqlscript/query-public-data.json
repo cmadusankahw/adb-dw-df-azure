@@ -1,8 +1,8 @@
 {
-	"name": "NYC Taxi Data",
+	"name": "query-public-data",
 	"properties": {
 		"content": {
-			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://contosolake.dfs.core.windows.net/users/NYCTripSmall.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]",
+			"query": "select top 10 *\nfrom openrowset(\n    bulk 'https://pandemicdatalake.blob.core.windows.net/public/curated/covid-19/ecdc_cases/latest/ecdc_cases.csv',\n    format = 'csv',\n    parser_version = '2.0',\n    firstrow = 2 ) as rows\n\ncreate external data source covid\nwith ( location = 'https://pandemicdatalake.blob.core.windows.net/public/curated/covid-19/ecdc_cases' );\n\n\nselect top 10 *\nfrom openrowset(\n        bulk 'latest/ecdc_cases.csv',\n        data_source = 'covid',\n        format = 'csv',\n        HEADER_ROW = TRUE,\n        parser_version ='2.0'\n    ) as rows",
 			"metadata": {
 				"language": "sql"
 			},
