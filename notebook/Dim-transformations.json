@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4d6a9994-8fa9-4dc8-93f9-9911e2b6c2aa"
+				"spark.autotune.trackingId": "589fe73f-70a0-4b73-aa05-a33dce688188"
 			}
 		},
 		"metadata": {
@@ -72,10 +72,9 @@
 					"import ast\r\n",
 					"import re\r\n",
 					"import calendar\r\n",
-					"import pandas\r\n",
-					"import holidays"
+					"import pandas"
 				],
-				"execution_count": 4
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -91,9 +90,10 @@
 					}
 				},
 				"source": [
-					"account_name = \"ascdl\"\r\n",
+					"account_name = \"ascadl\"\r\n",
 					"container_name = \"ascdlfs\"\r\n",
 					"\r\n",
+					"data_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/data.csv\")\r\n",
 					"customer_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/customers.csv\")\r\n",
 					"geolocation_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/geolocation.csv\")\r\n",
 					"delivery_services_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/delivery_services.csv\")\r\n",
@@ -106,7 +106,7 @@
 					"sellers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/sellers.csv\")\r\n",
 					"suppliers_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/stage/suppliers.csv\")"
 				],
-				"execution_count": 5
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
