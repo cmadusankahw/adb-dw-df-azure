@@ -2,7 +2,7 @@
 	"name": "query-adl",
 	"properties": {
 		"content": {
-			"query": "SELECT *\nFROM OPENROWSET(BULK 'abfss://ascdlfs@ascadl.dfs.core.windows.net/data/raw/data.csv',\n                format = 'csv',\n                parser_version = '2.0',\n                HEADER_ROW = TRUE) AS rows",
+			"query": "SELECT *\nFROM OPENROWSET(BULK 'abfss://ascdlfs@ascadl.dfs.core.windows.net/data/raw/salesmen.csv',\n                format = 'csv',\n                parser_version = '2.0',\n                HEADER_ROW = TRUE) AS rows\n\nSELECT *\nFROM OPENROWSET(BULK 'abfss://ascdlfs@ascadl.dfs.core.windows.net/data/raw/stackoverflow.csv',\n                format = 'csv',\n                parser_version = '2.0') AS rows",
 			"metadata": {
 				"language": "sql"
 			},
