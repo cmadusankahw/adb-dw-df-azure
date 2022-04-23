@@ -2,7 +2,7 @@
 	"name": "query-adl",
 	"properties": {
 		"content": {
-			"query": "",
+			"query": "SELECT *\nFROM OPENROWSET(BULK 'http://ascdl.dfs.core.windows.net/ascdlfs/main/raw/data.csv',\n                format = 'csv', parser_version = '2.0') AS rows",
 			"metadata": {
 				"language": "sql"
 			},
