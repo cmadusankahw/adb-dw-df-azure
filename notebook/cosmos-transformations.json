@@ -1,0 +1,238 @@
+{
+	"name": "cosmos-transformations",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool1",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "0a71d925-2059-4d60-8253-377ae0c2551c"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/88a4d9bc-f24a-46c1-8cbd-d3ce4a08be79/resourceGroups/as-east-us/providers/Microsoft.Synapse/workspaces/as-syanpse-ws/bigDataPools/sparkpool1",
+				"name": "sparkpool1",
+				"type": "Spark",
+				"endpoint": "https://as-syanpse-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool1",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# set spark config for session\r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"from pyspark.sql.functions import *\r\n",
+					"from pyspark.sql.functions import udf\r\n",
+					"from pyspark.sql.utils import AnalysisException\r\n",
+					"from pyspark.sql import Row\r\n",
+					"import datetime\r\n",
+					"import ast\r\n",
+					"import re\r\n",
+					"import calendar\r\n",
+					"import pandas"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"account_name = \"ascadl\"\r\n",
+					"container_name = \"ascdlfs\"\r\n",
+					"\r\n",
+					"csv_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.csv\")\r\n",
+					"json_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.json\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_df = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .csv(csv_raw_path)\r\n",
+					"customer_df.createOrReplaceTempView(\"customer\")\r\n",
+					"\r\n",
+					"\r\n",
+					"customer_json = spark.read\\\r\n",
+					"                .option(\"header\", True)\\\r\n",
+					"                .option(\"inferSchema\", True)\\\r\n",
+					"                .json(json_raw_path)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# pyspark processig"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "scala"
+					}
+				},
+				"source": [
+					"%%spark\r\n",
+					"\r\n",
+					"// magic functions - Scala\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%% sql\r\n",
+					"\r\n",
+					"-- magic functions SQL"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
