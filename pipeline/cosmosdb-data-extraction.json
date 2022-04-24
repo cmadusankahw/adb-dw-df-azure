@@ -109,7 +109,7 @@
 								},
 								"sink": {
 									"name": "empStatusCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -118,7 +118,7 @@
 								},
 								"sink": {
 									"name": "empStatusCodeSupport",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -127,7 +127,7 @@
 								},
 								"sink": {
 									"name": "empTypeCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -136,7 +136,7 @@
 								},
 								"sink": {
 									"name": "studentStatusCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -145,7 +145,7 @@
 								},
 								"sink": {
 									"name": "ficoScore",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -181,7 +181,7 @@
 								},
 								"sink": {
 									"name": "nflFootball",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -199,7 +199,7 @@
 								},
 								"sink": {
 									"name": "soccer",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -208,7 +208,7 @@
 								},
 								"sink": {
 									"name": "summerOlympics",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -217,7 +217,7 @@
 								},
 								"sink": {
 									"name": "winterOlympics",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -235,7 +235,7 @@
 								},
 								"sink": {
 									"name": "householdComposition",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -253,7 +253,7 @@
 								},
 								"sink": {
 									"name": "householdIncomeCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -262,7 +262,7 @@
 								},
 								"sink": {
 									"name": "householdOwnCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -280,7 +280,7 @@
 								},
 								"sink": {
 									"name": "livingArrangementCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -289,7 +289,7 @@
 								},
 								"sink": {
 									"name": "livingWithRelativeCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -307,7 +307,7 @@
 								},
 								"sink": {
 									"name": "ngFicoScore",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -316,7 +316,7 @@
 								},
 								"sink": {
 									"name": "age",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -325,7 +325,7 @@
 								},
 								"sink": {
 									"name": "collegeStudentCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -334,7 +334,7 @@
 								},
 								"sink": {
 									"name": "educationCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -343,7 +343,7 @@
 								},
 								"sink": {
 									"name": "genderCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -352,7 +352,7 @@
 								},
 								"sink": {
 									"name": "maritalStatusCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -361,7 +361,7 @@
 								},
 								"sink": {
 									"name": "postalCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -370,7 +370,7 @@
 								},
 								"sink": {
 									"name": "raceCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -379,7 +379,7 @@
 								},
 								"sink": {
 									"name": "raceCodeSupport",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -388,7 +388,7 @@
 								},
 								"sink": {
 									"name": "stateCode",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -397,7 +397,7 @@
 								},
 								"sink": {
 									"name": "stateCodeSupport",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -415,7 +415,7 @@
 								},
 								"sink": {
 									"name": "facebook",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -424,7 +424,7 @@
 								},
 								"sink": {
 									"name": "instagram",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -433,7 +433,7 @@
 								},
 								"sink": {
 									"name": "snapchat",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -442,7 +442,7 @@
 								},
 								"sink": {
 									"name": "twitter",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
@@ -451,7 +451,7 @@
 								},
 								"sink": {
 									"name": "youtube",
-									"type": "Int32"
+									"type": "Int64"
 								}
 							},
 							{
