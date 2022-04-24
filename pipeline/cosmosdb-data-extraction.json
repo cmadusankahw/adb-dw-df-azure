@@ -1,0 +1,553 @@
+{
+	"name": "cosmosdb-data-extraction",
+	"properties": {
+		"activities": [
+			{
+				"name": "Cosmos to ADL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Year Quarter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CosmosDbMongoDbApiSource",
+						"additionalColumns": [
+							{
+								"name": "Year",
+								"value": {
+									"value": "@substring(string(variables('YearQuarter')),0,1)",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "Quarter",
+								"value": {
+									"value": "@substring(string(variables('YearQuarter')),1,2)",
+									"type": "Expression"
+								}
+							}
+						],
+						"batchSize": 100,
+						"filter": {
+							"value": "{\"jobId\" : '1801'}",
+							"type": "Expression"
+						},
+						"cursorMethods": {
+							"limit": 1000
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['_id']['$oid']"
+								},
+								"sink": {
+									"name": "$oid"
+								}
+							},
+							{
+								"source": {
+									"path": "$['acxiomIpaScore']"
+								},
+								"sink": {
+									"name": "acxiomIpaScore"
+								}
+							},
+							{
+								"source": {
+									"path": "$['acxiomNetworthIndicator']"
+								},
+								"sink": {
+									"name": "acxiomNetworthIndicator"
+								}
+							},
+							{
+								"source": {
+									"path": "$['employment']['empStatusCode']"
+								},
+								"sink": {
+									"name": "empStatusCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['employment']['empStatusCodeSupport']"
+								},
+								"sink": {
+									"name": "empStatusCodeSupport"
+								}
+							},
+							{
+								"source": {
+									"path": "$['employment']['empTypeCode']"
+								},
+								"sink": {
+									"name": "empTypeCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['employment']['studentStatusCode']"
+								},
+								"sink": {
+									"name": "studentStatusCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ficoScore']"
+								},
+								"sink": {
+									"name": "ficoScore"
+								}
+							},
+							{
+								"source": {
+									"path": "$['frequentFlyerCodes']"
+								},
+								"sink": {
+									"name": "frequentFlyerCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['hotelLoyaltyCodes'][0]"
+								},
+								"sink": {
+									"name": "hotelLoyaltyCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['fashionWeek']"
+								},
+								"sink": {
+									"name": "fashionWeek"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['musicFestival']"
+								},
+								"sink": {
+									"name": "musicFestival"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['nflFootball']"
+								},
+								"sink": {
+									"name": "nflFootball"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['shoppedOnline']"
+								},
+								"sink": {
+									"name": "shoppedOnline"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['soccer']"
+								},
+								"sink": {
+									"name": "soccer"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['summerOlympics']"
+								},
+								"sink": {
+									"name": "summerOlympics"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestLevels']['winterOlympics']"
+								},
+								"sink": {
+									"name": "winterOlympics"
+								}
+							},
+							{
+								"source": {
+									"path": "$['jobId']"
+								},
+								"sink": {
+									"name": "jobId"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['children'][0]"
+								},
+								"sink": {
+									"name": "living_children']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['householdComposition']"
+								},
+								"sink": {
+									"name": "householdComposition"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['householdDesignation']"
+								},
+								"sink": {
+									"name": "householdDesignation"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['householdIncomeCode']"
+								},
+								"sink": {
+									"name": "householdIncomeCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['householdOwnCode']"
+								},
+								"sink": {
+									"name": "householdOwnCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['householdSizeCode']"
+								},
+								"sink": {
+									"name": "householdSizeCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['livingArrangementCode']"
+								},
+								"sink": {
+									"name": "livingArrangementCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['livingWithRelativeCode']"
+								},
+								"sink": {
+									"name": "livingWithRelativeCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['living']['region']"
+								},
+								"sink": {
+									"name": "region"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ngFicoScore']"
+								},
+								"sink": {
+									"name": "ngFicoScore"
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['amazonPrimeMmrCodes'][0]"
+								},
+								"sink": {
+									"name": "paymentMethod_amazonPrimeMmrCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['cardAssignment'][0]"
+								},
+								"sink": {
+									"name": "paymentMethod_cardAssignment']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['expressCheckoutCodes'][0]"
+								},
+								"sink": {
+									"name": "paymentMethod_expressCheckoutCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['incurBillPaymentCodes'][0]"
+								},
+								"sink": {
+									"name": "paymentMethod_incurBillPaymentCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['mobileWalletCodes'][0]"
+								},
+								"sink": {
+									"name": "paymentMethod_mobileWalletCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['onlineTransferCodes'][0]"
+								},
+								"sink": {
+									"name": "paymentMethod_onlineTransferCodes']["
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['paypal']['PaypalUsageCode']"
+								},
+								"sink": {
+									"name": "PaypalUsageCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['paymentMethod']['paypal']['PaypalOnmobile']"
+								},
+								"sink": {
+									"name": "PaypalOnmobile"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['age']"
+								},
+								"sink": {
+									"name": "age"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['collegeStudentCode']"
+								},
+								"sink": {
+									"name": "collegeStudentCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['educationCode']"
+								},
+								"sink": {
+									"name": "educationCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['genderCode']"
+								},
+								"sink": {
+									"name": "genderCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['maritalStatusCode']"
+								},
+								"sink": {
+									"name": "maritalStatusCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['postalCode']"
+								},
+								"sink": {
+									"name": "postalCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['raceCode']"
+								},
+								"sink": {
+									"name": "raceCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['raceCodeSupport']"
+								},
+								"sink": {
+									"name": "raceCodeSupport"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['stateCode']"
+								},
+								"sink": {
+									"name": "stateCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['stateCodeSupport']"
+								},
+								"sink": {
+									"name": "stateCodeSupport"
+								}
+							},
+							{
+								"source": {
+									"path": "$['personalInfo']['stateRespType']"
+								},
+								"sink": {
+									"name": "stateRespType"
+								}
+							},
+							{
+								"source": {
+									"path": "$['socialMedias']['facebook']"
+								},
+								"sink": {
+									"name": "facebook"
+								}
+							},
+							{
+								"source": {
+									"path": "$['socialMedias']['instagram']"
+								},
+								"sink": {
+									"name": "instagram"
+								}
+							},
+							{
+								"source": {
+									"path": "$['socialMedias']['snapchat']"
+								},
+								"sink": {
+									"name": "snapchat"
+								}
+							},
+							{
+								"source": {
+									"path": "$['socialMedias']['twitter']"
+								},
+								"sink": {
+									"name": "twitter"
+								}
+							},
+							{
+								"source": {
+									"path": "$['socialMedias']['youtube']"
+								},
+								"sink": {
+									"name": "youtube"
+								}
+							},
+							{
+								"source": {
+									"path": "$['userId']"
+								},
+								"sink": {
+									"name": "userId"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Year']"
+								},
+								"sink": {
+									"name": "Year"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Quarter']"
+								},
+								"sink": {
+									"name": "Quarter"
+								}
+							}
+						],
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "cosmosdbcustomers",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "cosmoscustomerscsv",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Set Year Quarter",
+				"description": "Comma separated years to ingest",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "YearQuarter",
+					"value": ""
+				}
+			}
+		],
+		"parameters": {
+			"Year": {
+				"type": "string",
+				"defaultValue": "1801"
+			}
+		},
+		"variables": {
+			"YearQuarter": {
+				"type": "String",
+				"defaultValue": "20221"
+			}
+		},
+		"folder": {
+			"name": "Data-Extraction"
+		},
+		"annotations": []
+	}
+}
