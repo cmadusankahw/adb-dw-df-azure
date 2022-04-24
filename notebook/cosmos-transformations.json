@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9cc70354-1362-4a42-a22c-14bb040b34b8"
+				"spark.autotune.trackingId": "ef23b72e-5641-4f15-87f3-61e16d765200"
 			}
 		},
 		"metadata": {
@@ -49,7 +49,31 @@
 		},
 		"cells": [
 			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Spark Configurations"
+				]
+			},
+			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
 					"# set spark config for session\r\n",
 					"# snippets\r\n",
@@ -71,6 +95,19 @@
 					"}"
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Imports "
+				]
 			},
 			{
 				"cell_type": "code",
@@ -102,6 +139,19 @@
 				"execution_count": 1
 			},
 			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Sourcing inputs"
+				]
+			},
+			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
@@ -121,7 +171,20 @@
 					"csv_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.csv\")\r\n",
 					"json_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.json\")"
 				],
-				"execution_count": null
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Reading Input files"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -149,7 +212,20 @@
 					"                .option(\"inferSchema\", True)\\\r\n",
 					"                .json(json_raw_path)"
 				],
-				"execution_count": null
+				"execution_count": 3
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### User-Defined Functions Definition"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -165,7 +241,111 @@
 					}
 				},
 				"source": [
-					"# pyspark processig"
+					"\"\"\"\r\n",
+					"    Generic UDF to generate surrogate key for a table\r\n",
+					"\"\"\"\r\n",
+					"def sk_generator(keycol,colname,df):\r\n",
+					"    return spark.sql('select row_number() over (order by \"{}\") as {}, * from {}'.format(keycol,colname,df))\r\n",
+					"\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to get a substring of a given column\r\n",
+					"\"\"\"\r\n",
+					"def getsubstring(col,start,end):\r\n",
+					"    try:\r\n",
+					"        return str(col)[start:end]\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"\r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to get quarter from date\r\n",
+					"\"\"\"\r\n",
+					"def getquarter(col,start,end):\r\n",
+					"    try:\r\n",
+					"        month = int(col[start:end])\r\n",
+					"        if month > 0 and month < 4:\r\n",
+					"            return 1\r\n",
+					"        elif month > 3 and month < 7:\r\n",
+					"            return 2\r\n",
+					"        elif month >6 and month < 10:\r\n",
+					"            return 3\r\n",
+					"        else:\r\n",
+					"            return 4\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					"        \r\n",
+					"\r\n",
+					"\"\"\"\r\n",
+					"    Generic UDF to calculate Age\r\n",
+					"\"\"\"\r\n",
+					"def calc_age(col):\r\n",
+					"    cur_year = int(datetime.datetime.now().date().strftime(\"%Y\"))\r\n",
+					"    try:\r\n",
+					"        return (cur_year - int(col[0:4]))\r\n",
+					"    except:\r\n",
+					"        pass\r\n",
+					""
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Data Processing"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# pyspark processig\r\n",
+					"getBirthYear = udf(lambda z: getsubstring(z,0,4))\r\n",
+					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
+					"getAge = udf(lambda z: calc_age(z))\r\n",
+					"generationBucketizer = udf(lambda z: bucketize(z,[18,23,39,55,64,199],[\"Children\",\"GenerationZ\",\"Millenials\",\"GenX\",\"BabyBoomer\",\"Silent\"]),StringType())\r\n",
+					"ageCategoryBucketizer = udf(lambda z: bucketize(z,[18,25,35,45,55,65,199],[\"0-18\",\"19-25\",\"26-35\",\"36-45\",\"46-55\",\"56-65\",\"66+\"]),StringType())\r\n",
+					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())\r\n",
+					"getPhoneOperator = udf(lambda z: getsubstring(z,0,3))\r\n",
+					"\r\n",
+					" #sk_generator('customer_id','sk_customer','customer')\\\r\n",
+					"customer_df = customer_df\\\r\n",
+					".withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
+					".withColumn( 'birth_month', getBirthMonth('birth_date'))\\\r\n",
+					".withColumn( 'age', getAge('birth_date'))\\\r\n",
+					".withColumn( 'generation', generationBucketizer('age'))\\\r\n",
+					".withColumn( 'age_category', ageCategoryBucketizer('age'))\\\r\n",
+					".withColumn( 'social_state', socialStateBucketizer('income'))\\\r\n",
+					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
+					".drop('phone_no')\r\n",
+					"\r\n",
+					"supplier_df = supplier_df.drop(\"supplied_quantity_for_month\")\r\n",
+					"\r\n",
+					"seller_product_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
+					".groupBy(\"seller_id\").agg(count('product_id').alias('no_of_products_sold'))\r\n",
+					"\r\n",
+					"seller_product_cat_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
+					".join(products_df.select(col(\"product_id\"),col(\"product_category_name\")).distinct(), how=\"left\", on=\"product_id\")\\\r\n",
+					".groupBy(\"seller_id\").agg(collect_list(\"product_category_name\"))\\\r\n",
+					".withColumnRenamed('collect_list(product_category_name)','product_categories_sold')\\\r\n",
+					".withColumn('product_categories_sold', getUniqueProductCat(col('product_categories_sold')))"
 				],
 				"execution_count": null
 			},
@@ -242,6 +422,70 @@
 					"# %run command currently only supports to 4 parameter value types: int, float, bool, string, variable replacement operation is not supported.\r\n",
 					"# The referenced notebooks are required to be published. You need to publish the notebooks to reference them. Synapse Studio does not recognize the unpublished notebooks from the Git repo.\r\n",
 					"# Referenced notebooks do not support statement that depth is larger than five."
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Dumping Processed Data tables to ADL"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\")\r\n",
+					"\r\n",
+					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_customer.csv\")\r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# write with collase\r\n",
+					"ustomer_df.coalesce(1).write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".save(customer_processed_path)\r\n",
+					"\r\n",
+					"# write without collase\r\n",
+					"ustomer_df.write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".save(customer_processed_path)"
 				],
 				"execution_count": null
 			}
