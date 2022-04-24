@@ -1,0 +1,28 @@
+{
+	"name": "trigger-cosmosdb-extraction",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "cosmosdb-data-extraction",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Year": "1801"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 24,
+				"startTime": "2022-04-25T00:00:00Z",
+				"endTime": "2022-04-26T00:00:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
