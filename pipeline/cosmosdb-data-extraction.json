@@ -150,15 +150,6 @@
 							},
 							{
 								"source": {
-									"path": "$['frequentFlyerCodes']"
-								},
-								"sink": {
-									"name": "frequentFlyerCodes'][",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"path": "$['interestLevels']['fashionWeek']"
 								},
 								"sink": {
