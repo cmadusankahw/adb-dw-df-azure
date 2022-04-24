@@ -506,8 +506,100 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "YearQuarter",
-					"value": ""
+					"value": "1801"
 				}
+			},
+			{
+				"name": "Cosmos to ADL_json",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Year Quarter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CosmosDbMongoDbApiSource",
+						"additionalColumns": [
+							{
+								"name": "Year",
+								"value": {
+									"value": "@substring(string(variables('YearQuarter')),0,1)",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "Quarter",
+								"value": {
+									"value": "@substring(string(variables('YearQuarter')),1,2)",
+									"type": "Expression"
+								}
+							}
+						],
+						"batchSize": 100,
+						"filter": {
+							"value": "{\"jobId\" : '1801'}",
+							"type": "Expression"
+						},
+						"cursorMethods": {
+							"limit": 1000
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"path": "ascdlfs/data/stage"
+					},
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Info",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "ascdlfs/logging"
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "cosmosdbcustomers",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "cosmoscustomersjson",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {

@@ -1,0 +1,20 @@
+{
+	"name": "cosmoscustomersjson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "customers.json",
+				"folderPath": "data/raw/cosmosdb",
+				"fileSystem": "ascdlfs"
+			}
+		},
+		"schema": {}
+	}
+}
