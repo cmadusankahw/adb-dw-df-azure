@@ -1,0 +1,47 @@
+{
+	"name": "cosmosDB-etl",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute CosmosDB Data Extraction",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "cosmosdb-data-extraction",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute Spark Transformations",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Execute CosmosDB Data Extraction",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"snapshot": true
+				}
+			}
+		],
+		"folder": {
+			"name": "ETL"
+		},
+		"annotations": []
+	}
+}
