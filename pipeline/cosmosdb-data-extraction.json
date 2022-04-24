@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Cosmos to ADL",
+				"name": "Cosmos to ADL_csv",
 				"type": "Copy",
 				"dependsOn": [
 					{
