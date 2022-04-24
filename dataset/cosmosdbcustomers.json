@@ -1,0 +1,15 @@
+{
+	"name": "cosmosdbcustomers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ascosmosdbcon",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbMongoDbApiCollection",
+		"schema": [],
+		"typeProperties": {
+			"collection": "customers"
+		}
+	}
+}
