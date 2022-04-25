@@ -1,0 +1,39 @@
+{
+	"name": "excel_data_sheet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Data",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Data - Single Worksheet.xlsx",
+				"folderPath": "data/raw",
+				"fileSystem": "ascdlfs"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "First Name",
+				"type": "String"
+			},
+			{
+				"name": "Last Name",
+				"type": "String"
+			},
+			{
+				"name": "City",
+				"type": "String"
+			},
+			{
+				"name": "Gender",
+				"type": "String"
+			}
+		]
+	}
+}
