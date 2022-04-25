@@ -19,35 +19,6 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "delivery_service_id",
-				"type": "String"
-			},
-			{
-				"name": "delivery_service_name",
-				"type": "String"
-			},
-			{
-				"name": "delivery_service_city",
-				"type": "String"
-			},
-			{
-				"name": "delivery_service_state",
-				"type": "String"
-			},
-			{
-				"name": "delivery_service_zip_code_prefix",
-				"type": "String"
-			},
-			{
-				"name": "delivery_service_reg_date",
-				"type": "String"
-			},
-			{
-				"name": "delivery_service_duration",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
