@@ -28,14 +28,14 @@
 							{
 								"name": "Year",
 								"value": {
-									"value": "@substring(string(variables('YearQuarter')),0,1)",
+									"value": "@substring(string(variables('YearQuarter')),0,2)",
 									"type": "Expression"
 								}
 							},
 							{
 								"name": "Quarter",
 								"value": {
-									"value": "@substring(string(variables('YearQuarter')),1,2)",
+									"value": "@substring(string(variables('YearQuarter')),2,3)",
 									"type": "Expression"
 								}
 							}
