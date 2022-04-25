@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "169faf41-2a93-4dc8-8691-43cb8f79c136"
+				"spark.autotune.trackingId": "e2b3a18b-674a-43b0-9fec-be103754a5a7"
 			}
 		},
 		"metadata": {
@@ -518,6 +518,26 @@
 				"source": [
 					"### Dumping Processed Data tables to ADL"
 				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.conf.set(\"spark.sql.legacy.allowCreatingManagedTableUsingNonemptyLocation\",\"true\") \r\n",
+					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\") \r\n",
+					"spark.conf.set('spark.rpc.message.maxSize','1024') "
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
