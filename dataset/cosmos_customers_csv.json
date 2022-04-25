@@ -1,5 +1,5 @@
 {
-	"name": "cosmoscustomerscsv",
+	"name": "cosmos_customers_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
