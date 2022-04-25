@@ -109,7 +109,7 @@
 								},
 								"sink": {
 									"name": "empStatusCode",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
@@ -118,7 +118,7 @@
 								},
 								"sink": {
 									"name": "empStatusCodeSupport",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
@@ -127,7 +127,7 @@
 								},
 								"sink": {
 									"name": "empTypeCode",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
@@ -136,7 +136,7 @@
 								},
 								"sink": {
 									"name": "studentStatusCode",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
@@ -145,7 +145,7 @@
 								},
 								"sink": {
 									"name": "ficoScore",
-									"type": "Int64"
+									"type": "String"
 								}
 							},
 							{
