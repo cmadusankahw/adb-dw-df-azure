@@ -13,7 +13,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "excel_data_sheet",
+						"referenceName": "flattened_socialmedia_csv",
 						"type": "DatasetReference"
 					},
 					"name": "SocialMediaData"
@@ -22,10 +22,10 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DimSeller",
+						"referenceName": "processed_customer_csv",
 						"type": "DatasetReference"
 					},
-					"name": "sinkwithUpdatingSCD"
+					"name": "SinktoProcessed"
 				}
 			],
 			"transformations": [
@@ -36,16 +36,19 @@
 					"name": "AddingIsAdultColumn"
 				},
 				{
-					"name": "AlterRows"
-				},
-				{
 					"name": "SelectRequiredRows"
 				},
 				{
-					"name": "join1"
+					"name": "JoinSocialMediaData"
+				},
+				{
+					"name": "SortByAge"
+				},
+				{
+					"name": "AgeToInteger"
 				}
 			],
-			"script": "parameters{\n\tYearQuarter as string\n}\nsource(output(\n\t\tuserId as string,\n\t\tage as string,\n\t\tbirthYear as string,\n\t\tgeneration as string,\n\t\tage_category as string,\n\t\tsocial_state as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 10000,\n\tignoreNoFilesFound: false) ~> CuratedCustomerData\nsource(output(\n\t\t{First Name} as string,\n\t\t{Last Name} as string,\n\t\tCity as string,\n\t\tGender as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SocialMediaData\nCuratedCustomerData filter(!isNull(userId)) ~> FilterNulls\nSelectRequiredRows derive(IsAdult = case(toInteger(Age) > 18, \"Yes\", \"No\")) ~> AddingIsAdultColumn\njoin1 alterRow(updateIf(1==1)) ~> AlterRows\nFilterNulls select(mapColumn(\n\t\tUser = userId,\n\t\tAge = age,\n\t\tGeneration = generation,\n\t\tBirthYear = birthYear\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nAddingIsAdultColumn join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> join1\nAlterRows sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_seller as integer,\n\t\tseller_id as string,\n\t\tseller_zip_code_prefix as integer,\n\t\tseller_city as string,\n\t\tseller_state as string,\n\t\tno_of_products_sold as integer,\n\t\tproduct_categories_sold as string,\n\t\tseller_size as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['sk_seller'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tsk_seller = User,\n\t\tseller_id = IsAdult,\n\t\tseller_zip_code_prefix = Generation,\n\t\tseller_city = BirthYear,\n\t\tseller_state,\n\t\tseller_size,\n\t\tscd_created_at,\n\t\tscd_is_current = IsAdult\n\t)) ~> sinkwithUpdatingSCD"
+			"script": "parameters{\n\tYearQuarter as string\n}\nsource(output(\n\t\tuserId as string,\n\t\tage as string,\n\t\tbirthYear as string,\n\t\tgeneration as string,\n\t\tage_category as string,\n\t\tsocial_state as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 10000,\n\tignoreNoFilesFound: false) ~> CuratedCustomerData\nsource(output(\n\t\tuserId as string,\n\t\tfacebook as string,\n\t\ttwitter as string,\n\t\tinstagram as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SocialMediaData\nCuratedCustomerData filter(!isNull(userId)) ~> FilterNulls\nSelectRequiredRows derive(IsAdult = case(toInteger(Age) > 18, \"Yes\", \"No\")) ~> AddingIsAdultColumn\nFilterNulls select(mapColumn(\n\t\tUser = userId,\n\t\tAge = age,\n\t\tGeneration = generation,\n\t\tBirthYear = birthYear\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nAddingIsAdultColumn, SocialMediaData join(User == userId,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSocialMediaData\nAgeToInteger sort(asc(Age, false)) ~> SortByAge\nJoinSocialMediaData derive(Age = toInteger(Age)) ~> AgeToInteger\nSortByAge sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tmapColumn(\n\t\tUser,\n\t\tAge,\n\t\tGeneration,\n\t\tBirthYear,\n\t\tIsAdult,\n\t\tFacebookUsage = facebook,\n\t\tTwitterUsage = twitter,\n\t\tInstagramUsage = instagram\n\t),\n\tformat: 'table') ~> SinktoProcessed"
 		}
 	}
 }
