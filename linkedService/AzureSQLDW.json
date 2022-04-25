@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=adb-db-server.database.windows.net;initial catalog=adb-dm-olis-dw;user id=sqladminuser",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VAMTlCMjkzQjgtQjZCOC00MDgzLTlDNUEtNEJGQ0NDOEJEMDE2XzQ4NWRjMmExLTk0MTAtNGJlMi04MDJmLTcyZmE0NTA5MzhlNSINCn0="
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=as-sw-sql-server.database.windows.net;initial catalog=olist-ecommerce;user id=sqluser",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VARjNGRDA3OUUtODY0RC00MkZDLUEwRDMtRDkyRjJBRkY3OEFFXzUxMzdlZTAwLTJiMjUtNGYzNy05ZGZkLTJjNTdlZTJkYjBmNCINCn0="
 		},
 		"connectVia": {
 			"referenceName": "AutoResolveIntegrationRuntime",
