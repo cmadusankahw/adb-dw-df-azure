@@ -10,8 +10,8 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "master",
-				"poolName": "Built-in"
+				"databaseName": "asdwpool",
+				"poolName": "asdwpool"
 			},
 			"resultLimit": 5000
 		},
