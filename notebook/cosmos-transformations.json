@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3c49017b-eb2e-40f5-9577-da246045fe68"
+				"spark.autotune.trackingId": "e19cb899-3b75-400d-ae8f-190631019e36"
 			}
 		},
 		"metadata": {
@@ -146,7 +146,7 @@
 				"source": [
 					"yearQuarter = \"1801\""
 				],
-				"execution_count": 55
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -188,7 +188,7 @@
 					"import calendar\r\n",
 					"import pandas"
 				],
-				"execution_count": 33
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -223,7 +223,7 @@
 					"csv_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.csv\")\r\n",
 					"json_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.json\")"
 				],
-				"execution_count": 34
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -264,7 +264,7 @@
 					"                .option(\"inferSchema\", True)\\\r\n",
 					"                .json(json_raw_path)"
 				],
-				"execution_count": 35
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -339,7 +339,7 @@
 					"def array_to_string(arr): \r\n",
 					"    return '[' + ','.join([str(elem) for elem in arr]) + ']'"
 				],
-				"execution_count": 36
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -372,7 +372,7 @@
 					"customer_flattened = flatten(customer_json.schema) \r\n",
 					"flt_customer_df = customer_json.select(*customer_flattened)"
 				],
-				"execution_count": 37
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -404,7 +404,7 @@
 					"\r\n",
 					"customer_df.createOrReplaceTempView(\"customer\")"
 				],
-				"execution_count": 46
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -458,7 +458,7 @@
 					"\r\n",
 					"customer_df.withColumn(\"Average FicoScore\", avgFunc(customer_df(\"ngFicoScore\"))).show(true)"
 				],
-				"execution_count": 50
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -535,9 +535,11 @@
 				"source": [
 					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\")\r\n",
 					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/cosmosdb/{}/customer.csv\".format(yearQuarter))\r\n",
+					"\r\n",
+					"sm_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/cosmosdb/{}/socialmedia.csv\".format(yearQuarter))\r\n",
 					""
 				],
-				"execution_count": 56
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -561,6 +563,29 @@
 					".save(customer_processed_path)"
 				],
 				"execution_count": 58
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# writing social media data\r\n",
+					"customer_df.select(\"userId\",'facebook',\"twitter\",'instagram').write\\\r\n",
+					".format(\"csv\")\\\r\n",
+					".mode(\"overwrite\")\\\r\n",
+					".option(\"header\", \"true\")\\\r\n",
+					".save(sm_processed_path)"
+				],
+				"execution_count": null
 			}
 		]
 	}
