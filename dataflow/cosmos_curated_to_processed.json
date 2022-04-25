@@ -21,9 +21,9 @@
 			],
 			"sinks": [
 				{
-					"linkedService": {
-						"referenceName": "AzureSQLDW",
-						"type": "LinkedServiceReference"
+					"dataset": {
+						"referenceName": "CosmosCustomer",
+						"type": "DatasetReference"
 					},
 					"name": "SinktoProcessed"
 				}
@@ -48,7 +48,7 @@
 					"name": "AgeToInteger"
 				}
 			],
-			"script": "parameters{\n\tYearQuarter as string\n}\nsource(output(\n\t\tuserId as string,\n\t\tage as string,\n\t\tbirthYear as string,\n\t\tgeneration as string,\n\t\tage_category as string,\n\t\tsocial_state as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 10000,\n\tignoreNoFilesFound: false) ~> CuratedCustomerData\nsource(output(\n\t\tuserId as string,\n\t\tfacebook as string,\n\t\ttwitter as string,\n\t\tinstagram as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SocialMediaData\nCuratedCustomerData filter(!isNull(userId)) ~> FilterNulls\nSelectRequiredRows derive(IsAdult = case(toInteger(Age) > 18, \"Yes\", \"No\")) ~> AddingIsAdultColumn\nFilterNulls select(mapColumn(\n\t\tUser = userId,\n\t\tAge = age,\n\t\tGeneration = generation,\n\t\tBirthYear = birthYear\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nAddingIsAdultColumn, SocialMediaData join(User == userId,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSocialMediaData\nAgeToInteger sort(asc(Age, false)) ~> SortByAge\nJoinSocialMediaData derive(Age = toInteger(Age)) ~> AgeToInteger\nSortByAge sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tstore: 'sqlserver',\n\tschemaName: '',\n\ttableName: '',\n\tinsertable: true,\n\tupdateable: true,\n\tdeletable: false,\n\tupsertable: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> SinktoProcessed"
+			"script": "parameters{\n\tYearQuarter as string\n}\nsource(output(\n\t\tuserId as string,\n\t\tage as string,\n\t\tbirthYear as string,\n\t\tgeneration as string,\n\t\tage_category as string,\n\t\tsocial_state as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 10000,\n\tignoreNoFilesFound: false) ~> CuratedCustomerData\nsource(output(\n\t\tuserId as string,\n\t\tfacebook as string,\n\t\ttwitter as string,\n\t\tinstagram as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SocialMediaData\nCuratedCustomerData filter(!isNull(userId)) ~> FilterNulls\nSelectRequiredRows derive(IsAdult = case(toInteger(Age) > 18, \"Yes\", \"No\")) ~> AddingIsAdultColumn\nFilterNulls select(mapColumn(\n\t\tUser = userId,\n\t\tAge = age,\n\t\tGeneration = generation,\n\t\tBirthYear = birthYear\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nAddingIsAdultColumn, SocialMediaData join(User == userId,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSocialMediaData\nAgeToInteger sort(asc(Age, false)) ~> SortByAge\nJoinSocialMediaData derive(Age = toInteger(Age)) ~> AgeToInteger\nSortByAge sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tsk_customer as integer,\n\t\tcustomer_id as string,\n\t\tcustomer_unique_id as string,\n\t\tcustomer_zip_code_prefix as integer,\n\t\tcustomer_city as string,\n\t\tcustomer_state as string,\n\t\tbirth_date as string,\n\t\tbirth_year as integer,\n\t\tbirth_month as integer,\n\t\tgeneration as string,\n\t\tage as integer,\n\t\tage_category as string,\n\t\tgender as string,\n\t\tname as string,\n\t\tmarital_status as string,\n\t\tincome as string,\n\t\tsocial_state as string,\n\t\temployement_status as string,\n\t\tjob_role as string,\n\t\tphone_operator as string,\n\t\tscd_created_at as timestamp,\n\t\tscd_is_current as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> SinktoProcessed"
 		}
 	}
 }
