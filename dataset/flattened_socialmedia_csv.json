@@ -28,23 +28,15 @@
 				"type": "String"
 			},
 			{
-				"name": "age",
+				"name": "facebook",
 				"type": "String"
 			},
 			{
-				"name": "birthYear",
+				"name": "twitter",
 				"type": "String"
 			},
 			{
-				"name": "generation",
-				"type": "String"
-			},
-			{
-				"name": "age_category",
-				"type": "String"
-			},
-			{
-				"name": "social_state",
+				"name": "instagram",
 				"type": "String"
 			}
 		]
