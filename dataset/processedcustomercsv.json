@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "customers.csv",
-				"folderPath": "data/curated/cosmosdb",
+				"folderPath": "data/curated/cosmosdb/1801",
 				"fileSystem": "ascdlfs"
 			},
 			"columnDelimiter": ",",
