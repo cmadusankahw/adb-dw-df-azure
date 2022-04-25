@@ -30,7 +30,16 @@
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
 					},
-					"method": "GET"
+					"method": "GET",
+					"headers": {
+						" user-agent": "gister"
+					},
+					"datasets": [
+						{
+							"referenceName": "cosmoscustomerscsv",
+							"type": "DatasetReference"
+						}
+					]
 				}
 			},
 			{
