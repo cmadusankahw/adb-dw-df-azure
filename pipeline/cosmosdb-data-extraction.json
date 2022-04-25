@@ -497,7 +497,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "YearQuarter",
-					"value": "1801"
+					"value": {
+						"value": "@pipeline().parameters.YearQuarter",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -594,7 +597,7 @@
 			}
 		],
 		"parameters": {
-			"Year": {
+			"YearQuarter": {
 				"type": "string",
 				"defaultValue": "1801"
 			}
