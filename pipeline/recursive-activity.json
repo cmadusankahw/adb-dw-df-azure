@@ -1,0 +1,9 @@
+{
+	"name": "recursive-activity",
+	"properties": {
+		"folder": {
+			"name": "ETL"
+		},
+		"annotations": []
+	}
+}
