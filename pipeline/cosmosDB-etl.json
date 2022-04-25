@@ -5,7 +5,14 @@
 			{
 				"name": "Execute CosmosDB Data Extraction",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set IPAScore",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -20,7 +27,7 @@
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{
-						"activity": "Execute CosmosDB Data Extraction",
+						"activity": "Validation File Existance",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,10 +42,77 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"snapshot": true
+					"notebook": {
+						"referenceName": "cosmos-transformations",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"IPAScore": {
+							"value": "8",
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool1",
+						"type": "BigDataPoolReference"
+					}
+				}
+			},
+			{
+				"name": "Set IPAScore",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "IPAScore",
+					"value": ""
+				}
+			},
+			{
+				"name": "Validation File Existance",
+				"type": "Validation",
+				"dependsOn": [
+					{
+						"activity": "Execute CosmosDB Data Extraction",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "cosmoscustomerscsv",
+						"type": "DatasetReference"
+					},
+					"timeout": "7.00:00:00",
+					"sleep": 10
+				}
+			},
+			{
+				"name": "Sample wait",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Execute Spark Transformations",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 5
 				}
 			}
 		],
+		"variables": {
+			"IPAScore": {
+				"type": "String",
+				"defaultValue": "8"
+			}
+		},
 		"folder": {
 			"name": "ETL"
 		},
