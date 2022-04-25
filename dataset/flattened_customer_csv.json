@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "customers.csv",
+				"fileName": "customer.csv",
 				"folderPath": {
 					"value": "data/curated/cosmosdb/flattened",
 					"type": "Expression"
