@@ -1,5 +1,5 @@
 {
-	"name": "cosmoscustomerscsv_flattened",
+	"name": "flattened_customer_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
@@ -12,7 +12,7 @@
 				"type": "AzureBlobFSLocation",
 				"fileName": "customers.csv",
 				"folderPath": {
-					"value": "data/raw/cosmosdb/@{variables('YearQuarter')}",
+					"value": "data/curated/cosmosdb/flattened",
 					"type": "Expression"
 				},
 				"fileSystem": "ascdlfs"
