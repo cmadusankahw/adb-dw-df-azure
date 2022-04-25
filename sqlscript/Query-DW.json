@@ -1,0 +1,20 @@
+{
+	"name": "Query-DW",
+	"properties": {
+		"folder": {
+			"name": "Dedicated Pool querying"
+		},
+		"content": {
+			"query": "SELECT * FROM [dbo].[Geography];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "asdwpool",
+				"poolName": "asdwpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
