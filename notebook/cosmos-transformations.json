@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "ef23b72e-5641-4f15-87f3-61e16d765200"
+				"spark.autotune.trackingId": "ce4f0745-66eb-4ee6-a000-d34c9ae3d14d"
 			}
 		},
 		"metadata": {
@@ -106,6 +106,40 @@
 					}
 				},
 				"source": [
+					"### Parameter Cell"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"yearQuarter = \"1801\""
+				],
+				"execution_count": 55
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"### Imports "
 				]
 			},
@@ -136,7 +170,7 @@
 					"import calendar\r\n",
 					"import pandas"
 				],
-				"execution_count": 1
+				"execution_count": 33
 			},
 			{
 				"cell_type": "markdown",
@@ -171,7 +205,7 @@
 					"csv_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.csv\")\r\n",
 					"json_raw_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/raw/cosmosdb/customers.json\")"
 				],
-				"execution_count": 2
+				"execution_count": 34
 			},
 			{
 				"cell_type": "markdown",
@@ -212,7 +246,7 @@
 					"                .option(\"inferSchema\", True)\\\r\n",
 					"                .json(json_raw_path)"
 				],
-				"execution_count": 3
+				"execution_count": 35
 			},
 			{
 				"cell_type": "markdown",
@@ -249,29 +283,13 @@
 					"\r\n",
 					"\r\n",
 					"\"\"\"\r\n",
-					"    Generic UDF to get a substring of a given column\r\n",
+					"    Generic UDF to bucketize given column values into a given no of buckets\r\n",
 					"\"\"\"\r\n",
-					"def getsubstring(col,start,end):\r\n",
+					"def bucketize(col,bucket_margins,bucket_names):\r\n",
 					"    try:\r\n",
-					"        return str(col)[start:end]\r\n",
-					"    except:\r\n",
-					"        pass\r\n",
-					"\r\n",
-					"\r\n",
-					"\"\"\"\r\n",
-					"    Generic UDF to get quarter from date\r\n",
-					"\"\"\"\r\n",
-					"def getquarter(col,start,end):\r\n",
-					"    try:\r\n",
-					"        month = int(col[start:end])\r\n",
-					"        if month > 0 and month < 4:\r\n",
-					"            return 1\r\n",
-					"        elif month > 3 and month < 7:\r\n",
-					"            return 2\r\n",
-					"        elif month >6 and month < 10:\r\n",
-					"            return 3\r\n",
-					"        else:\r\n",
-					"            return 4\r\n",
+					"        for i in range(len(bucket_margins)):\r\n",
+					"            if col < bucket_margins[i]:\r\n",
+					"                return bucket_names[i]\r\n",
 					"    except:\r\n",
 					"        pass\r\n",
 					"        \r\n",
@@ -279,15 +297,31 @@
 					"\"\"\"\r\n",
 					"    Generic UDF to calculate Age\r\n",
 					"\"\"\"\r\n",
-					"def calc_age(col):\r\n",
+					"def calc_birthyear(col):\r\n",
 					"    cur_year = int(datetime.datetime.now().date().strftime(\"%Y\"))\r\n",
 					"    try:\r\n",
-					"        return (cur_year - int(col[0:4]))\r\n",
+					"        return (cur_year - int(col))\r\n",
 					"    except:\r\n",
 					"        pass\r\n",
-					""
+					"\r\n",
+					"\r\n",
+					"#return a list of all (possibly nested) fields to select, within a given schema \r\n",
+					"def flatten(schema, prefix: str = \"\"): \r\n",
+					"# return a list of sub-items to select, within a given field \r\n",
+					"    def field_items(field): \r\n",
+					"        name = f'{prefix}.{field.name}' if prefix else field.name \r\n",
+					"        if type(field.dataType) == StructType: \r\n",
+					"            return flatten(field.dataType, name) \r\n",
+					"        else: \r\n",
+					"            return [col(name)] \r\n",
+					"    return [item for field in schema.fields for item in field_items(field)] \r\n",
+					"\r\n",
+					" \r\n",
+					"# return stringified form of an array \r\n",
+					"def array_to_string(arr): \r\n",
+					"    return '[' + ','.join([str(elem) for elem in arr]) + ']'"
 				],
-				"execution_count": 4
+				"execution_count": 36
 			},
 			{
 				"cell_type": "markdown",
@@ -316,38 +350,62 @@
 					}
 				},
 				"source": [
+					"# flattening schema\r\n",
+					"customer_flattened = flatten(customer_json.schema) \r\n",
+					"flt_customer_df = customer_json.select(*customer_flattened)"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"# pyspark processig\r\n",
-					"getBirthYear = udf(lambda z: getsubstring(z,0,4))\r\n",
-					"getBirthMonth = udf(lambda z: getsubstring(z,5,7))\r\n",
-					"getAge = udf(lambda z: calc_age(z))\r\n",
+					"getBirthYear = udf(lambda z: calc_birthyear(z))\r\n",
 					"generationBucketizer = udf(lambda z: bucketize(z,[18,23,39,55,64,199],[\"Children\",\"GenerationZ\",\"Millenials\",\"GenX\",\"BabyBoomer\",\"Silent\"]),StringType())\r\n",
 					"ageCategoryBucketizer = udf(lambda z: bucketize(z,[18,25,35,45,55,65,199],[\"0-18\",\"19-25\",\"26-35\",\"36-45\",\"46-55\",\"56-65\",\"66+\"]),StringType())\r\n",
-					"socialStateBucketizer = udf(lambda z: social_state(z,[\"0-19999\",\"100000-199999\"],[\"Poor\",\"Wealthy\",\"Mid Level Income\"]),StringType())\r\n",
-					"getPhoneOperator = udf(lambda z: getsubstring(z,0,3))\r\n",
+					"socialStateBucketizer = udf(lambda z: bucketize(z,[250,500,750,999],[\"Poor\",\"Wealthy\",\"Mid Level Income\",\"High Income\"]),StringType())\r\n",
 					"\r\n",
 					" #sk_generator('customer_id','sk_customer','customer')\\\r\n",
-					"customer_df = customer_df\\\r\n",
-					".withColumn( 'birth_year', getBirthYear('birth_date'))\\\r\n",
-					".withColumn( 'birth_month', getBirthMonth('birth_date'))\\\r\n",
-					".withColumn( 'age', getAge('birth_date'))\\\r\n",
+					"customer_df = flt_customer_df\\\r\n",
+					".withColumn( 'birthYear', getBirthYear('age'))\\\r\n",
 					".withColumn( 'generation', generationBucketizer('age'))\\\r\n",
 					".withColumn( 'age_category', ageCategoryBucketizer('age'))\\\r\n",
-					".withColumn( 'social_state', socialStateBucketizer('income'))\\\r\n",
-					".withColumn( 'phone_operator', getPhoneOperator('phone_no'))\\\r\n",
-					".drop('phone_no')\r\n",
+					".withColumn( 'ngFicoScore', flt_customer_df[\"ngFicoScore\"].cast(IntegerType()))\\\r\n",
+					".withColumn( 'social_state', socialStateBucketizer('ngFicoScore'))\r\n",
 					"\r\n",
-					"supplier_df = supplier_df.drop(\"supplied_quantity_for_month\")\r\n",
-					"\r\n",
-					"seller_product_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
-					".groupBy(\"seller_id\").agg(count('product_id').alias('no_of_products_sold'))\r\n",
-					"\r\n",
-					"seller_product_cat_df = order_items_df.select(col(\"seller_id\"),col(\"product_id\"))\\\r\n",
-					".join(products_df.select(col(\"product_id\"),col(\"product_category_name\")).distinct(), how=\"left\", on=\"product_id\")\\\r\n",
-					".groupBy(\"seller_id\").agg(collect_list(\"product_category_name\"))\\\r\n",
-					".withColumnRenamed('collect_list(product_category_name)','product_categories_sold')\\\r\n",
-					".withColumn('product_categories_sold', getUniqueProductCat(col('product_categories_sold')))"
+					"customer_df.createOrReplaceTempView(\"customer\")"
 				],
-				"execution_count": null
+				"execution_count": 46
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(customer_df.select(\"userId\",'age',\"birthYear\",'generation','age_category','social_state'))"
+				],
+				"execution_count": 47
 			},
 			{
 				"cell_type": "code",
@@ -370,17 +428,19 @@
 					"\r\n",
 					"// magic functions - Scala\r\n",
 					"\r\n",
-					"customer_df.filter(customer_df(\"Location\") === \"Santa Maria-Orcutt\")\r\n",
-					"    .groupBy(\"Location\")\r\n",
-					"    .count()\r\n",
-					"    .as(\"No of Houses\")\r\n",
-					"    .show(true)\r\n",
+					"// customer_df.filter(customer_df(\"birthyear\") > 1980)\r\n",
+					"//     .groupBy(\"generation\")\r\n",
+					"//     .count()\r\n",
+					"//     .as(\"No of respondents for each Generation\")\r\n",
+					"//     .show(true)\r\n",
 					"\r\n",
-					"val avgFunc = udf((HousePrice: Double, SQFeetPrice: Double, Size: Integer) => {( HousePrice + Size * SQFeetPrice ) / 2})\r\n",
+					"val avgFunc = udf((NgFicoScore: Integer) => {NgFicoScore / 2})\r\n",
 					"\r\n",
-					"realEstate.withColumn(\"Average Price\", avgFunc(realEstate(\"Price\"),realEstate(\"Price SQ Ft\"),realEstate(\"Size\"))).show(true)"
+					"val customer_df = spark.sql(\"SELECT userId,ngFicoScore  FROM customer\")\r\n",
+					"\r\n",
+					"customer_df.withColumn(\"Average FicoScore\", avgFunc(customer_df(\"ngFicoScore\"))).show(true)"
 				],
-				"execution_count": null
+				"execution_count": 50
 			},
 			{
 				"cell_type": "code",
@@ -393,14 +453,17 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
 				},
 				"source": [
-					"%% sql\r\n",
-					"\r\n",
-					"-- magic functions SQL"
+					"%%sql\r\n",
+					"SELECT userId, age, generation FROM customer LIMIT 10"
 				],
-				"execution_count": null
+				"execution_count": 53
 			},
 			{
 				"cell_type": "code",
@@ -453,11 +516,10 @@
 				},
 				"source": [
 					"spark.conf.set(\"spark.sql.broadcastTimeout\", \"36000\")\r\n",
-					"\r\n",
-					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/dim_customer.csv\")\r\n",
+					"customer_processed_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name,account_name,\"data/curated/cosmosdb/{}/customer.csv\".format(yearQuarter))\r\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 56
 			},
 			{
 				"cell_type": "code",
@@ -473,21 +535,14 @@
 					}
 				},
 				"source": [
-					"# write with collase\r\n",
-					"ustomer_df.coalesce(1).write\\\r\n",
-					".format(\"csv\")\\\r\n",
-					".mode(\"overwrite\")\\\r\n",
-					".option(\"header\", \"true\")\\\r\n",
-					".save(customer_processed_path)\r\n",
-					"\r\n",
 					"# write without collase\r\n",
-					"ustomer_df.write\\\r\n",
+					"customer_df.select(\"userId\",'age',\"birthYear\",'generation','age_category','social_state').write\\\r\n",
 					".format(\"csv\")\\\r\n",
 					".mode(\"overwrite\")\\\r\n",
 					".option(\"header\", \"true\")\\\r\n",
 					".save(customer_processed_path)"
 				],
-				"execution_count": null
+				"execution_count": 58
 			}
 		]
 	}
