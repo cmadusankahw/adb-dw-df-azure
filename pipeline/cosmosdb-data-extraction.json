@@ -42,7 +42,7 @@
 						],
 						"batchSize": 100,
 						"filter": {
-							"value": "{\"jobId\" : '1801'}",
+							"value": "{\"jobId\" : @{variables('YearQuarter')}}",
 							"type": "Expression"
 						},
 						"cursorMethods": {
