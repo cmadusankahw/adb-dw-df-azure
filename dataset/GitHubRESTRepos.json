@@ -9,7 +9,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@{variables('UserName')}/repos",
+				"value": "repos/@{variables('UserName')}",
 				"type": "Expression"
 			}
 		},
