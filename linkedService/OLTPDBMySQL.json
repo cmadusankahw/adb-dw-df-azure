@@ -1,0 +1,16 @@
+{
+	"name": "OLTPDBMySQL",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMySql",
+		"typeProperties": {
+			"connectionString": "server=asmysqlserver.mysql.database.azure.com;port=3306;database=olistecommerce;uid=sqladmin@asmysqlserver;sslmode=1;usesystemtruststore=0",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTkFQU0VARjNGRDA3OUUtODY0RC00MkZDLUEwRDMtRDkyRjJBRkY3OEFFX2Y3MmZjNmQzLTgwMWUtNDYwOC05NDJiLTRhOWU2MWMwMGY5NiINCn0="
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
