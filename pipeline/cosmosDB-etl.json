@@ -189,7 +189,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "processedcustomercsv",
+						"referenceName": "processed_customer_csv",
 						"type": "DatasetReference"
 					}
 				]

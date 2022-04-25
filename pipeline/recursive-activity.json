@@ -3,42 +3,32 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Call a Web API",
-				"type": "WebActivity",
+				"name": "Year 2018 to 2020",
+				"type": "ForEach",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
-						"type": "IntegrationRuntimeReference"
+					"items": {
+						"value": "@createArray('1801', '1802','1803','1804','1901','1902','1903','1904','2001','2002','2003','2004')",
+						"type": "Expression"
 					},
-					"method": "GET",
-					"linkedServices": [
+					"isSequential": true,
+					"activities": [
 						{
-							"referenceName": "as-syanpse-ws-WorkspaceDefaultSqlServer",
-							"type": "LinkedServiceReference"
+							"name": "Execute cosmosDB ETL Pipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "cosmosDB-etl",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
 						}
 					]
 				}
-			},
-			{
-				"name": "Filter1",
-				"type": "Filter",
-				"dependsOn": [],
-				"userProperties": []
-			},
-			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"dependsOn": [],
-				"userProperties": []
 			}
 		],
 		"folder": {
