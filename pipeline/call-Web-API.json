@@ -1,0 +1,58 @@
+{
+	"name": "call-Web-API",
+	"properties": {
+		"activities": [
+			{
+				"name": "Call API",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Git User Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "https://api.github.com/users/@{variables('UserName')}/repos",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET"
+				}
+			},
+			{
+				"name": "Git User Name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "UserName",
+					"value": "octocat"
+				}
+			}
+		],
+		"variables": {
+			"UserName": {
+				"type": "String",
+				"defaultValue": "octocat"
+			}
+		},
+		"folder": {
+			"name": "ETL"
+		},
+		"annotations": []
+	}
+}
