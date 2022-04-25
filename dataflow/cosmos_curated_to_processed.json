@@ -21,9 +21,9 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "processed_customer_csv",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "AzureSQLDW",
+						"type": "LinkedServiceReference"
 					},
 					"name": "SinktoProcessed"
 				}
@@ -48,7 +48,7 @@
 					"name": "AgeToInteger"
 				}
 			],
-			"script": "parameters{\n\tYearQuarter as string\n}\nsource(output(\n\t\tuserId as string,\n\t\tage as string,\n\t\tbirthYear as string,\n\t\tgeneration as string,\n\t\tage_category as string,\n\t\tsocial_state as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 10000,\n\tignoreNoFilesFound: false) ~> CuratedCustomerData\nsource(output(\n\t\tuserId as string,\n\t\tfacebook as string,\n\t\ttwitter as string,\n\t\tinstagram as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SocialMediaData\nCuratedCustomerData filter(!isNull(userId)) ~> FilterNulls\nSelectRequiredRows derive(IsAdult = case(toInteger(Age) > 18, \"Yes\", \"No\")) ~> AddingIsAdultColumn\nFilterNulls select(mapColumn(\n\t\tUser = userId,\n\t\tAge = age,\n\t\tGeneration = generation,\n\t\tBirthYear = birthYear\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nAddingIsAdultColumn, SocialMediaData join(User == userId,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSocialMediaData\nAgeToInteger sort(asc(Age, false)) ~> SortByAge\nJoinSocialMediaData derive(Age = toInteger(Age)) ~> AgeToInteger\nSortByAge sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\tmapColumn(\n\t\tUser,\n\t\tAge,\n\t\tGeneration,\n\t\tBirthYear,\n\t\tIsAdult,\n\t\tFacebookUsage = facebook,\n\t\tTwitterUsage = twitter,\n\t\tInstagramUsage = instagram\n\t),\n\tformat: 'table') ~> SinktoProcessed"
+			"script": "parameters{\n\tYearQuarter as string\n}\nsource(output(\n\t\tuserId as string,\n\t\tage as string,\n\t\tbirthYear as string,\n\t\tgeneration as string,\n\t\tage_category as string,\n\t\tsocial_state as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 10000,\n\tignoreNoFilesFound: false) ~> CuratedCustomerData\nsource(output(\n\t\tuserId as string,\n\t\tfacebook as string,\n\t\ttwitter as string,\n\t\tinstagram as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> SocialMediaData\nCuratedCustomerData filter(!isNull(userId)) ~> FilterNulls\nSelectRequiredRows derive(IsAdult = case(toInteger(Age) > 18, \"Yes\", \"No\")) ~> AddingIsAdultColumn\nFilterNulls select(mapColumn(\n\t\tUser = userId,\n\t\tAge = age,\n\t\tGeneration = generation,\n\t\tBirthYear = birthYear\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectRequiredRows\nAddingIsAdultColumn, SocialMediaData join(User == userId,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinSocialMediaData\nAgeToInteger sort(asc(Age, false)) ~> SortByAge\nJoinSocialMediaData derive(Age = toInteger(Age)) ~> AgeToInteger\nSortByAge sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tstore: 'sqlserver',\n\tschemaName: '',\n\ttableName: '',\n\tinsertable: true,\n\tupdateable: true,\n\tdeletable: false,\n\tupsertable: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> SinktoProcessed"
 		}
 	}
 }
