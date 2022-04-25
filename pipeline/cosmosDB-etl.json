@@ -62,7 +62,14 @@
 			{
 				"name": "Set IPAScore",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set YearQuarter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "IPAScore",
@@ -132,12 +139,72 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Load to DW",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Sample wait",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "data/curated/cosmosdb/@{variables('YearQuarter')}/customer",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 2
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "processedcustomercsv",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Set YearQuarter",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "YearQuarter",
+					"value": ""
+				}
 			}
 		],
 		"variables": {
 			"IPAScore": {
 				"type": "String",
 				"defaultValue": "8"
+			},
+			"YearQuarter": {
+				"type": "String",
+				"defaultValue": "1801"
 			}
 		},
 		"folder": {
