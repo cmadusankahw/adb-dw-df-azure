@@ -94,7 +94,13 @@
 				"type": "Wait",
 				"dependsOn": [
 					{
-						"activity": "Curated to Processerd",
+						"activity": "Flatten Customer to Single file",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Flatten SocialMedia to Single file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -110,13 +116,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Flatten Customer to Single file",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Flatten SocialMedia to Single file",
+						"activity": "Sample wait",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -147,52 +147,6 @@
 					},
 					"traceLevel": "Fine"
 				}
-			},
-			{
-				"name": "Load to DW",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Sample wait",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": {
-								"value": "data/curated/cosmosdb/@{variables('YearQuarter')}",
-								"type": "Expression"
-							},
-							"wildcardFileName": "*.csv",
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings",
-							"skipLineCount": 2
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "processed_customer_csv",
-						"type": "DatasetReference"
-					}
-				]
 			},
 			{
 				"name": "Set YearQuarter",
