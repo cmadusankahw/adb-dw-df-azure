@@ -1,0 +1,20 @@
+{
+	"name": "GitHUBRepos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "repos.json",
+				"folderPath": "data/raw/api",
+				"fileSystem": "acdlfs"
+			}
+		},
+		"schema": {}
+	}
+}
