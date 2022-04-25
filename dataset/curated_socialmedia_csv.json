@@ -1,0 +1,24 @@
+{
+	"name": "curated_socialmedia_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "socialmedia.csv",
+				"folderPath": "data/curated/cosmosdb",
+				"fileSystem": "ascdlfs"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
