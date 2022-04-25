@@ -12,7 +12,7 @@
 				"type": "AzureBlobFSLocation",
 				"fileName": "repos.json",
 				"folderPath": "data/raw/api",
-				"fileSystem": "acdlfs"
+				"fileSystem": "ascdlfs"
 			}
 		},
 		"schema": {}
