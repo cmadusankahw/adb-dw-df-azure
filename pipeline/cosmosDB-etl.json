@@ -82,7 +82,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "cosmoscustomerscsv",
+						"referenceName": "cosmos_customers_csv",
 						"type": "DatasetReference"
 					},
 					"timeout": "7.00:00:00",

@@ -484,7 +484,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "cosmoscustomerscsv",
+						"referenceName": "cosmos_customers_csv",
 						"type": "DatasetReference"
 					}
 				]
