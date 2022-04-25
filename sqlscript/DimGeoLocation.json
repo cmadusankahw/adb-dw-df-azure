@@ -1,6 +1,9 @@
 {
 	"name": "DimGeoLocation",
 	"properties": {
+		"folder": {
+			"name": "Azure-SQL-DW"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimGeoLocation]   Script Date: 12/28/2021******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimGeoLocation]') AND type in (N'U'))\nDROP TABLE [dbo].[DimGeoLocation]\nGO\n\n\nCREATE TABLE [dbo].[DimGeoLocation](\n\t[geolocation_zip_code_prefix] [int] NOT NULL,\n\t[geolocation_lattitude] [float] NULL,\n\t[geolocation_longtitude] [float] NULL,\n\t[geolocation_city] [nvarchar](50) NULL,\n\t[geolocation_state] [nvarchar](50) NULL,\n CONSTRAINT [PK_DimGeoLocation] PRIMARY KEY CLUSTERED \n(\n\t[geolocation_zip_code_prefix] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO\n",
 			"metadata": {

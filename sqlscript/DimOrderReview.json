@@ -1,6 +1,9 @@
 {
 	"name": "DimOrderReview",
 	"properties": {
+		"folder": {
+			"name": "Azure-SQL-DW"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimOrderReview]    Script Date: 12/28/2021******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimOrderReview]') AND type in (N'U'))\nDROP TABLE [dbo].[DimOrderReview]\nGO\n\nCREATE TABLE [dbo].[DimOrderReview](\n\t[sk_review] [int] IDENTITY(1,1),\n\t[review_id] [nvarchar](50) NOT NULL,\n\t[order_id] [nvarchar](50) NOT NULL,\n\t[review_score] [tinyint] NULL,\n\t[review_creation_date] [datetime2](7) NULL,\n\t[review_sentiment] [nvarchar](max) NULL,\n\t[review_answer_timestamp] [datetime2](7) NULL,\n\t[scd_created_at] [datetime2](7) DEFAULT GETDATE(),\n\t[scd_is_current] [nvarchar](50) DEFAULT 'YES',\n CONSTRAINT [PK_DimOrderReview] PRIMARY KEY CLUSTERED \n(\n\t[sk_review] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO",
 			"metadata": {

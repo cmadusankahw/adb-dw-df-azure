@@ -1,6 +1,9 @@
 {
 	"name": "DimDate",
 	"properties": {
+		"folder": {
+			"name": "Azure-SQL-DW"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimDate]    Script Date: 12/28/2021******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimDate]') AND type in (N'U'))\nDROP TABLE [dbo].[DimDate]\nGO\n\n\nCREATE TABLE [dbo].[DimDate](\n\t[sk_date] [int] IDENTITY(1,1),\n\t[date] [datetime2](7) NOT NULL,\n\t[year] [int] NULL,\n\t[quarter] [int] NULL,\n\t[month] [int] NULL,\n\t[week_of_year] [int] NULL,\n\t[day_of_month] [int] NULL,\n\t[day_of_week] [int] NULL,\n\t[day_prefix] [nvarchar](50) NULL,\n\t[is_weekend] [nvarchar](50) NULL,\n\t[is_holiday] [nvarchar](50) NULL,\n\t[is_leap_year] [nvarchar](50) NULL,\n CONSTRAINT [PK_DimDate] PRIMARY KEY CLUSTERED \n(\n\t[sk_date] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO",
 			"metadata": {

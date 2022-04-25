@@ -1,6 +1,9 @@
 {
 	"name": "DimDeliveryService",
 	"properties": {
+		"folder": {
+			"name": "Azure-SQL-DW"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimDeliveryService]    Script Date: 12/28/2021******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimDeliveryService]') AND type in (N'U'))\nDROP TABLE [dbo].[DimDeliveryService]\nGO\n\n\nCREATE TABLE [dbo].[DimDeliveryService](\n\t[sk_delivery_service] [int] IDENTITY(1,1),\n\t[delivery_service_id] [nvarchar](50) NOT NULL,\n\t[delivery_service_name] [nvarchar](50) NULL,\n\t[delivery_service_city] [nvarchar](50) NULL,\n\t[delivery_service_state] [nvarchar](50) NULL,\n\t[delivery_service_zip_code_prefix] [int] NULL,\n\t[delivery_service_reg_date] [datetime2](7) NULL,\n\t[scd_created_at] [datetime2](7) DEFAULT GETDATE(),\n\t[scd_is_current] [nvarchar](50) DEFAULT 'YES',\n CONSTRAINT [PK_DimDeliveryService] PRIMARY KEY CLUSTERED \n(\n\t[sk_delivery_service] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO\n\n\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "DimCustomer",
 	"properties": {
+		"folder": {
+			"name": "Azure-SQL-DW"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimCustomer]    Script Date: 12/28/2021 10:34:36 AM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nIF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DimCustomer]') AND type in (N'U'))\nDROP TABLE [dbo].[DimCustomer]\nGO\n\nCREATE TABLE [dbo].[DimCustomer](\n\t[sk_customer] [int] IDENTITY(1,1),\n\t[customer_id] [nvarchar](50) NOT NULL,\n\t[customer_unique_id] [nvarchar](50) NULL,\n\t[customer_zip_code_prefix] [int] NULL,\n\t[customer_city] [nvarchar](50) NULL,\n\t[customer_state] [nvarchar](50) NULL,\n\t[birth_date] [nvarchar](50) NULL,\n\t[birth_year] [int] NULL,\n\t[birth_month] [int] NULL,\n\t[generation]  [nvarchar](50) NULL,\n\t[age]  [int] NULL,\n\t[age_category]  [nvarchar](50) NULL,\n\t[gender] [nvarchar](50) NULL,\n\t[name] [nvarchar](50) NULL,\n\t[marital_status] [nvarchar](50) NULL,\n\t[income] [nvarchar](50) NULL,\n\t[social_state] [nvarchar](50) NULL,\n\t[employement_status] [nvarchar](50) NULL,\n\t[job_role] [nvarchar](50) NULL,\n\t[phone_operator] [nvarchar](50) NULL,\n\t[scd_created_at] [datetime2](7) DEFAULT GETDATE(),\n\t[scd_is_current] [nvarchar](50) DEFAULT 'YES',\n CONSTRAINT [PK_DimCustomer] PRIMARY KEY CLUSTERED \n(\n\t[sk_customer] ASC\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\n) ON [PRIMARY]\nGO\n",
 			"metadata": {
