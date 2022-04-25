@@ -1,5 +1,5 @@
 {
-	"name": "processedcustomercsv",
+	"name": "processed_customer_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "customers.csv",
+				"fileName": "customer.csv",
 				"folderPath": "data/processed/cosmosdb",
 				"fileSystem": "ascdlfs"
 			},
