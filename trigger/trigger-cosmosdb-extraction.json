@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Year": "1801"
+					"YearQuarter": "1801"
 				}
 			}
 		],
