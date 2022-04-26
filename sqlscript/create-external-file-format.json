@@ -1,0 +1,17 @@
+{
+	"name": "create-external-file-format",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL FILE FORMAT census_file_format\nWITH\n(  \n    FORMAT_TYPE = PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
