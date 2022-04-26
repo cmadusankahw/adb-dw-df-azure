@@ -1,0 +1,58 @@
+{
+	"name": "MySQL_Suppliers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDBMySQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureMySqlTable",
+		"schema": [
+			{
+				"name": "supplier_id",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplier_comapny",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplier_city",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplier_state",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplier_zip_code_prefix",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplied_quantity_for_month",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplier_reg_date",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"tableName": "suppliers"
+		}
+	}
+}
