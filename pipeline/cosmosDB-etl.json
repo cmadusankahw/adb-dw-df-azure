@@ -141,6 +141,13 @@
 							}
 						}
 					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "ascdlfs/data/stage"
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
@@ -155,7 +162,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "YearQuarter",
-					"value": ""
+					"value": "1801"
 				}
 			},
 			{
@@ -198,7 +205,8 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "MergeFiles"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
@@ -269,7 +277,8 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "MergeFiles"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
