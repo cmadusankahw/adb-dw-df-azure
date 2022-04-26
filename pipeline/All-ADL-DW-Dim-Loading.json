@@ -58,42 +58,11 @@
 				}
 			},
 			{
-				"name": "Load DimSeller",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "Load DimDeliveryService",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "SellerSCDFlow",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
-			},
-			{
 				"name": "Load DimSupplier",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Load DimSeller",
+						"activity": "Load DimDeliveryService",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -172,37 +141,6 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "OrderDetailsSCDFlow",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
-			},
-			{
-				"name": "Load DimOrderreview",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "Load DimOrderDetail",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "OrderReviewSCDFlow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -392,125 +330,6 @@
 				"outputs": [
 					{
 						"referenceName": "DimDate",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
-				"name": "Load DimGeoLocation",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Load DimDate",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "AzureSqlSink"
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "geolocation_zip_code_prefix",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "geolocation_zip_code_prefix",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "geolocation_lattitude",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "geolocation_lattitude",
-									"type": "Double",
-									"physicalType": "float"
-								}
-							},
-							{
-								"source": {
-									"name": "geolocation_longtitude",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "geolocation_longtitude",
-									"type": "Double",
-									"physicalType": "float"
-								}
-							},
-							{
-								"source": {
-									"name": "geolocation_city",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "geolocation_city",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "geolocation_state",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "geolocation_state",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "dim_geolocation",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DimGeoLocation",
 						"type": "DatasetReference"
 					}
 				]
