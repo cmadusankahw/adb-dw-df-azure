@@ -11,67 +11,14 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "customers.csv",
-				"folderPath": "data/stage",
-				"fileSystem": "chiransubfs"
+				"folderPath": "data/raw/olist-ecommerce",
+				"fileSystem": "ascdlfs"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "customer_id",
-				"type": "String"
-			},
-			{
-				"name": "customer_unique_id",
-				"type": "String"
-			},
-			{
-				"name": "customer_zip_code_prefix",
-				"type": "String"
-			},
-			{
-				"name": "customer_city",
-				"type": "String"
-			},
-			{
-				"name": "customer_state",
-				"type": "String"
-			},
-			{
-				"name": "birth_date",
-				"type": "String"
-			},
-			{
-				"name": "gender",
-				"type": "String"
-			},
-			{
-				"name": "name",
-				"type": "String"
-			},
-			{
-				"name": "marital_status",
-				"type": "String"
-			},
-			{
-				"name": "income",
-				"type": "String"
-			},
-			{
-				"name": "employement_status",
-				"type": "String"
-			},
-			{
-				"name": "job_role",
-				"type": "String"
-			},
-			{
-				"name": "phone_no",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
