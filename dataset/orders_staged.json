@@ -11,8 +11,8 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "orders.csv",
-				"folderPath": "data/stage",
-				"fileSystem": "chiransubfs"
+				"folderPath": "data/raw/olist-ecommerce",
+				"fileSystem": "ascdlfs"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
