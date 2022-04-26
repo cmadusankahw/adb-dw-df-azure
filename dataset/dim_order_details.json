@@ -2,7 +2,7 @@
 	"name": "dim_order_details",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adb-dw-dm-synapse-WorkspaceDefaultStorage",
+			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -15,7 +15,7 @@
 					"type": "Expression"
 				},
 				"folderPath": "data/curated/dim_order_details.csv",
-				"fileSystem": "chiransubfs"
+				"fileSystem": "ascdlfs"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
