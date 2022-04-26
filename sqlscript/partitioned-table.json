@@ -1,0 +1,17 @@
+{
+	"name": "partitioned-table",
+	"properties": {
+		"content": {
+			"query": "\nCopy\nCREATE TABLE [dbo].[FactInternetSales_CustomerKey]\nWITH (  CLUSTERED COLUMNSTORE INDEX\n     ,  DISTRIBUTION =  HASH([CustomerKey])\n     ,  PARTITION       ( [OrderDateKey] RANGE RIGHT FOR VALUES (   20000101, 20010101, 20020101, 20030101\n                                                                ,   20040101, 20050101, 20060101, 20070101\n                                                                ,   20080101, 20090101, 20100101, 20110101\n                                                                ,   20120101, 20130101, 20140101, 20150101\n                                                                ,   20160101, 20170101, 20180101, 20190101\n                                                                ,   20200101, 20210101, 20220101, 20230101\n                                                                ,   20240101, 20250101, 20260101, 20270101\n                                                                ,   20280101, 20290101\n                                                                )\n                        )\n    )\nAS\nSELECT  *\nFROM    [dbo].[FactInternetSales]\nOPTION  (LABEL  = 'CTAS : FactInternetSales_CustomerKey')\n;\n\n--Create statistics on new table\nCREATE STATISTICS [ProductKey] ON [FactInternetSales_CustomerKey] ([ProductKey]);\nCREATE STATISTICS [OrderDateKey] ON [FactInternetSales_CustomerKey] ([OrderDateKey]);\nCREATE STATISTICS [CustomerKey] ON [FactInternetSales_CustomerKey] ([CustomerKey]);\nCREATE STATISTICS [PromotionKey] ON [FactInternetSales_CustomerKey] ([PromotionKey]);\nCREATE STATISTICS [SalesOrderNumber] ON [FactInternetSales_CustomerKey] ([SalesOrderNumber]);\nCREATE STATISTICS [OrderQuantity] ON [FactInternetSales_CustomerKey] ([OrderQuantity]);\nCREATE STATISTICS [UnitPrice] ON [FactInternetSales_CustomerKey] ([UnitPrice]);\nCREATE STATISTICS [SalesAmount] ON [FactInternetSales_CustomerKey] ([SalesAmount]);\n\n--Rename the tables\nRENAME OBJECT [dbo].[FactInternetSales] TO [FactInternetSales_ProductKey];\nRENAME OBJECT [dbo].[FactInternetSales_CustomerKey] TO [FactInternetSales];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
