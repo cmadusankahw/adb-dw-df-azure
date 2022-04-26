@@ -1,0 +1,58 @@
+{
+	"name": "MySQL_Delivery_Services",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDBMySQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureMySqlTable",
+		"schema": [
+			{
+				"name": "MyUnknownColumn",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "delivery_service_id",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "delivery_service_name",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "delivery_service_city",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "delivery_service_state",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "delivery_service_zip_code_prefix",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "delivery_service_reg_date",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"tableName": "delivery_services"
+		}
+	}
+}
