@@ -1,0 +1,94 @@
+{
+	"name": "MySQL_Customers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDBMySQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureMySqlTable",
+		"schema": [
+			{
+				"name": "customer_id",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "customer_unique_id",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "customer_zip_code_prefix",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "customer_city",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "customer_state",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "birth_date",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "gender",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "name",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "marital_status",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "income",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "employement_status",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "job_role",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "phone_no",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"tableName": "customers"
+		}
+	}
+}
