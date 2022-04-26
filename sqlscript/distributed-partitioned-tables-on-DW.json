@@ -1,0 +1,17 @@
+{
+	"name": "distributed-partitioned-tables-on-DW",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE [dbo].[HashDistributedTable]\n  (  \n   id int NOT NULL,  \n   lastName varchar(20),  \n   zipCode varchar(6)  \n  )  \nWITH  \n  (   \n    DISTRIBUTION = HASH (id),  \n    CLUSTERED COLUMNSTORE INDEX\n  )  \n;\n\n\nCREATE TABLE [dbo].[ReplicatedTable]\n  (  \n    id int NOT NULL,  \n    lastName varchar(20),  \n    zipCode varchar(6)  \n  )  \nWITH  \n  (   \n    DISTRIBUTION = REPLICATE,\n    CLUSTERED INDEX (lastName)  \n  );\n\n\n\nCREATE TABLE [dbo].[ReplicatedTable]\n  (  \n    id int NOT NULL,  \n    lastName varchar(20),  \n    zipCode int)  \nWITH\n  (\n  \n    PARTITION ( id RANGE LEFT FOR VALUES (10, 20, 30, 40 )),  \n    CLUSTERED COLUMNSTORE INDEX\n  )  \n; \n\n-- Partition 1: col <= 10\n-- Partition 2: 10 < col <= 20\n-- Partition 3: 20 < col <= 30\n-- Partition 4: 30 < col <= 40\n-- Partition 5: 40 < col\n\n\n-- If this same table was partitioned RANGE RIGHT instead of RANGE LEFT (default), \n-- the data will be sorted into the following partitions:\n-- Partition 1: col < 10\n-- Partition 2: 10 <= col < 20\n-- Partition 3: 20 <= col < 30\n-- Partition 4: 30 <= col < 40\n-- Partition 5: 40 <= col",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "asdwpool",
+				"poolName": "asdwpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
