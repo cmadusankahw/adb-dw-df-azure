@@ -1,0 +1,106 @@
+{
+	"name": "MySQL_Products",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OLTPDBMySQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureMySqlTable",
+		"schema": [
+			{
+				"name": "product_id",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "product_category_name",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "product_name_lenght",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_description_lenght",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_photos_qty",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_weight_g",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_length_cm",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_height_cm",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_width_cm",
+				"type": "double",
+				"precision": 0,
+				"scale": 31
+			},
+			{
+				"name": "product_description",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "unit_price",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "product_quantity_on_hand",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "product_discount",
+				"type": "int",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "product_brand",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "supplier_id",
+				"type": "text",
+				"precision": 0,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"tableName": "products"
+		}
+	}
+}
