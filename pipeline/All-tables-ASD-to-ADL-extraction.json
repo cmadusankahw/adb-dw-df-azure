@@ -233,9 +233,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "AzureMySqlSource",
+						"queryTimeout": "02:00:00"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -248,7 +247,28 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false,
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"path": "ascdlfs/data/stage"
+					},
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "ascdlfs/logging"
+						}
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -256,7 +276,7 @@
 								"source": {
 									"name": "order_id",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_id",
@@ -268,7 +288,7 @@
 								"source": {
 									"name": "customer_id",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "customer_id",
@@ -280,7 +300,7 @@
 								"source": {
 									"name": "order_status",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_status",
@@ -291,8 +311,8 @@
 							{
 								"source": {
 									"name": "order_purchase_timestamp",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_purchase_timestamp",
@@ -303,8 +323,8 @@
 							{
 								"source": {
 									"name": "order_approved_at",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_approved_at",
@@ -315,8 +335,8 @@
 							{
 								"source": {
 									"name": "order_delivered_carrier_date",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_delivered_carrier_date",
@@ -327,8 +347,8 @@
 							{
 								"source": {
 									"name": "order_delivered_customer_date",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_delivered_customer_date",
@@ -339,8 +359,8 @@
 							{
 								"source": {
 									"name": "order_estimated_delivery_date",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "order_estimated_delivery_date",
@@ -352,7 +372,7 @@
 								"source": {
 									"name": "delivery_service_id",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "text"
 								},
 								"sink": {
 									"name": "delivery_service_id",
@@ -370,7 +390,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Orders",
+						"referenceName": "MySQL_Orders",
 						"type": "DatasetReference"
 					}
 				],
