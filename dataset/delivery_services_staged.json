@@ -2,7 +2,7 @@
 	"name": "delivery_services_staged",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adb-dw-dm-synapse-WorkspaceDefaultStorage",
+			"referenceName": "as-syanpse-ws-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
